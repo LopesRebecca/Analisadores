@@ -16,10 +16,14 @@ public class Token {
 
     private int tipo;
     private String texto;
+    private int linha;
+    private int coluna;
 
     public Token() {
         this.tipo = tipo;
         this.texto = texto;
+        this.linha = linha;
+        this.coluna = coluna;
     }
 
     public int getTipo() {
@@ -38,6 +42,21 @@ public class Token {
         this.texto = texto;
     }
 
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
+    public int getColuna() {
+        return coluna;
+    }
+
+    public void setColuna(int coluna) {
+        this.coluna = coluna;
+    }
 
     @Override
     public String toString() {

@@ -5,11 +5,11 @@ Conectivos Binários: & (conjunção), # (disjunção) e > (implicação)
 Sı́mbolos auxiliares: ) e ( - parênteses.
 */
 package AnalisadorLexico.analisador;
+import AnalisadorLexico.execesoes.ExpectionLexico;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import AnalisadorLexico.execeçoes.ExpectionLexico;
 
 public class AnalisadorLexico {
 
@@ -54,8 +54,6 @@ public class AnalisadorLexico {
     public AnalisadorLexico(String filename){
         try {
             //ler cada byte do arquivo
-            //linha =1;
-            //coluna =0;
             String txtformula;
             txtformula = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
             System.out.println(txtformula);
@@ -165,9 +163,8 @@ public class AnalisadorLexico {
     private boolean auxiliares(char c){
         return c==')' || c== '(';
     }
-
-
     //negocinhos definidos
+
 
     //percorrer essa pra ngm ficar abandonado!
     private char proximo(){
