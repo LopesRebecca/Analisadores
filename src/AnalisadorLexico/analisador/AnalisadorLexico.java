@@ -6,6 +6,7 @@ Sı́mbolos auxiliares: ) e ( - parênteses.
 */
 package AnalisadorLexico.analisador;
 import AnalisadorLexico.execesoes.ExpectionLexico;
+import AnalisadorLexico.analisador.Token;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,6 +17,8 @@ public class AnalisadorLexico {
     private char[] formula;
     private int estado;
     private int posicao;
+    private int linha;
+    private  int coluna;
 
     public AnalisadorLexico() {
     }
@@ -23,7 +26,10 @@ public class AnalisadorLexico {
     public AnalisadorLexico(char[] formula, int estado, int pos, int linha, int coluna) {
         this.formula = formula;
         this.estado = estado;
-        this.posicao = pos;
+        this.posicao = posicao;
+        this.linha = linha;
+        this.coluna = coluna;
+
 
     }
 
@@ -67,8 +73,8 @@ public class AnalisadorLexico {
     //analisar a formula e definir tokens
     public Token proximoToken(){
         char formulaDaVez;
-        Token token;
-        String termo="";
+        Token token = new Token();
+        String termo=" ";
 
         if(finalDoArquivo()) {
             return null;
@@ -77,8 +83,8 @@ public class AnalisadorLexico {
 
         while(true){
             formulaDaVez = proximo();
-            //coluna++;
-            token = new Token();
+            coluna++;
+            //token = new Token();
 
             switch(estado) {
                 case 0:
@@ -87,11 +93,17 @@ public class AnalisadorLexico {
                         estado = 1;
                     }else if (numerico(formulaDaVez)) {
                         termo+=formulaDaVez;
-                        estado=3;
+                        estado=2;
                     }else if (espacamento(formulaDaVez)) {
                         estado = 0;
                     }else if (operadores(formulaDaVez)) {
-                        estado=5;
+                        termo +=formulaDaVez;
+                        token.setTipo(Token.TK_OPERATION);
+                        token.setTexto(termo);
+                        token.setLinha(linha);
+                        token.setColuna(coluna - termo.length());
+                        return token;
+
                     }else if(auxiliares(formulaDaVez)){
                         estado = 5;
                     }else {
@@ -100,44 +112,40 @@ public class AnalisadorLexico {
                     break;
                 case 1:
                     if (letra(formulaDaVez) || numerico(formulaDaVez) || auxiliares(formulaDaVez)){
-                        termo += formulaDaVez;
                         estado=1;
+                        termo += formulaDaVez;
                     }else if (espacamento(formulaDaVez) || operadores(formulaDaVez) || auxiliares(formulaDaVez)){
-                        estado=2;
+                        if (!finalarquivo(formulaDaVez)) {
+                            back();
+                        }
+                        token.setTipo(Token.TK_IDENT);
+                        token.setTexto(termo);
+                        token.setLinha(linha);
+                        token.setColuna(coluna - termo.length());
+                        return token;
                     }else {
                         throw new ExpectionLexico("Erro identificador mal formulado");
                     }
                     break;
                 case 2:
-                   back();
-                   token.setTipo(Token.TK_IDENT);
-                   token.setTexto(termo);
-                   return token;
-
-                case 3:
-                    if(numerico(formulaDaVez)){
-                        termo+=formulaDaVez;
-                        estado=3;
-                    }else if(!letra(formulaDaVez)){
-                        estado=4;
-                    }else{
-                        throw  new ExpectionLexico("Erro numerico");
+                    if (numerico(formulaDaVez) || formulaDaVez == '.') {
+                        estado = 2;
+                        termo += formulaDaVez;
                     }
-
-                case 4:
-                    token.setTipo(Token.TK_NUMBER);
-                    token.setTexto(termo);
-                    back();
-                    return token;
-
-                case 5:
-                    termo+=formulaDaVez;
-                    token.setTipo(Token.TK_OPERATION);
-                    token.setTexto(termo);
-                    return token;
-
-                default:
-                    throw new IllegalStateException("Unexpected value: " + estado);
+                    else if (!letra(formulaDaVez) || finalarquivo(formulaDaVez)) {
+                        if (!finalarquivo(formulaDaVez))
+                            back();
+                        token = new Token();
+                        token.setTipo(Token.TK_NUMBER);
+                        token.setTexto(termo);
+                        token.setLinha(linha);
+                        token.setColuna(coluna - termo.length());
+                        return token;
+                    }
+                    else {
+                        throw new ExpectionLexico("Unrecognized Number");
+                    }
+                    break;
             }
         }
     }
@@ -153,7 +161,7 @@ public class AnalisadorLexico {
     }
 
     private boolean operadores(char c){
-        return c=='-'|| c=='#' || c=='&' || c=='>';
+        return c == '-' || c == '#' || c == '&' || c == '>';
     }
 
     private boolean espacamento(char c){
@@ -168,16 +176,24 @@ public class AnalisadorLexico {
 
     //percorrer essa pra ngm ficar abandonado!
     private char proximo(){
+        if(finalDoArquivo()){
+            return '\0';
+        }
         return formula[posicao++];
     }
 
     //ja acabou jessica?
     private boolean finalDoArquivo(){
-        return posicao == formula.length;
+        return posicao >= formula.length;
     }
 
     //volta pra tras!
     private void back(){
         posicao--;
+        coluna --;
+    }
+
+    private boolean finalarquivo(char c){
+        return  c == '\0';
     }
 }

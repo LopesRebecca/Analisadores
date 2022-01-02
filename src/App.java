@@ -11,12 +11,13 @@ public class App {
             AnalisadorSintatico as = new AnalisadorSintatico(al);
             Token token = null;
 
-            as.E();
+            as.JuntandoGeral();
             System.out.println("Compilation Successful!");
+
         } catch (ExpectionLexico e) {
-            System.out.println("Erro Lexico"+e.getMessage());
+            System.out.println("Erro Lexico" +e.getMessage());
         }catch (ExceptionSintatico e) {
-            System.out.println("Erro Sintatico"+e.getMessage());
+            System.out.println("\n Erro Sintatico" +e.getMessage());
         }catch (Exception e) {
             System.out.println("Erro generico!!");
             System.out.println(e.getClass().getName());

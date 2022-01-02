@@ -7,7 +7,7 @@ public class Token {
     public  static final int TK_NUMBER = 1;
     public static final int TK_OPERATION = 2;
     public static  final int TK_PONCTUATION = 3;
-    public static final int TK_ASSIGN      = 4;
+    public static final int TK_ASSIGNMENT = 4;
     public static final int TK_OTHER = 5;
 
     public static final String TK_TEXT[] = {
@@ -58,11 +58,12 @@ public class Token {
         this.coluna = coluna;
     }
 
+
+
     @Override
     public String toString() {
-        return "Token{" +
+        return "Token[" +
                 "tipo=" + tipo +
-                ", texto='" + texto + '\'' +
-                '}';
+                ", texto=" + texto + ']';
     }
 }
