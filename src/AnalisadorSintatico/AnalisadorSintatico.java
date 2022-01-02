@@ -1,22 +1,24 @@
 package AnalisadorSintatico;
 
-import AnalisadorLexico.analisador.AnalisadorLexico;
-import AnalisadorLexico.analisador.Token;
+import Exeptions.ExceptionSintatico;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import AnalisadorLexico.AnalisadorLexico;
+import AnalisadorLexico.Token;
+
 public class AnalisadorSintatico {
 
-    private AnalisadorLexico al;
+    private AnalisadorLexico aLexico;
     private Token token;
     private String formula;
 
     //recebendo o analisador lexico como parametro
-    public  AnalisadorSintatico(AnalisadorLexico al){
-        this.al = al;
-        this.token = token;
+    public  AnalisadorSintatico(AnalisadorLexico aLexico){
+        this.aLexico = aLexico;
+//        this.token = token;
     }
 
     public void JuntandoGeral() {
@@ -26,11 +28,11 @@ public class AnalisadorSintatico {
 
     }
 
-    //verificar se √© o ultimo token
+    //verificar se e o ultimo token
     public void VerificarToken() {
-        token = al.proximoToken();
+        token = aLexico.proximoToken();
         if (token != null) {
-            Operador(); //verificar se √© uma operador
+            Operador(); //verificar se h· uma operador
             TipoDeIdentidade();
             VerificarToken();
         }
@@ -38,9 +40,9 @@ public class AnalisadorSintatico {
 
     //julgando a identidade
     public void TipoDeIdentidade() {
-        token = al.proximoToken();
-        if (token.getTipo() != Token.TK_IDENT && token.getTipo() != Token.TK_NUMBER) {
-            throw new ExceptionSintatico("ID ou Numero n√£o esperado");
+        token = aLexico.proximoToken();
+        if (token.getTipo() != Token.TK_IDENT && token.getTipo() != Token.TK_NUMBER && token.getTipo() != Token.TK_ASSIGNMENT) {
+            throw new ExceptionSintatico("ID ou Numero n„o esperado");
         }
 
     }
