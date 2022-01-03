@@ -67,7 +67,7 @@ public class Token {
     @Override
     public String toString() {
         return "Token[" +
-                "tipo=" + tipo +
-                "texto=" + texto + "]\n";
+                "tipo = " + tipo +
+                "\ttexto = " + texto + "]\n";
     }
 }

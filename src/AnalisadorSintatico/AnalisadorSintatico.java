@@ -5,6 +5,7 @@ import Exeptions.ExceptionSintatico;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.*;
 
 import AnalisadorLexico.AnalisadorLexico;
 import AnalisadorLexico.Token;
@@ -12,7 +13,7 @@ import AnalisadorLexico.Token;
 public class AnalisadorSintatico {
 
 	private AnalisadorLexico aLexico;
-	private Token token;
+	private static Token token;
 	private Token tokenAnterior;
 	private Token tokenProximo;
 //	private String formula;
@@ -58,6 +59,7 @@ public class AnalisadorSintatico {
 			case 3:
 				parenteses();
 				verificarToken();
+				verificarParenteses();
 				break;
 			case 4:
 				espaco();
@@ -107,15 +109,48 @@ public class AnalisadorSintatico {
 		}
 		tokenAnterior = token;
 	}
-	
-//	public void proximoElemento() {
-//		AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());
-//		tokenProximo = analisarProximo.proximoToken();
-//		
-//		if(tokenProximo.getTipo() == Token.TK_SPACE){
-//			proximoElemento();
-//		}
-//		
-//	}
+
+	/*
+	public void proximoElementoOperadores() {
+		AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());
+		tokenProximo = analisarProximo.proximoToken();
+
+		if(tokenProximo.getTipo() == Token.TK_SPACE){
+			proximoElementoOperadores();
+			System.out.println("aaaaa");
+			if (tokenProximo.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_SPACE) {
+				throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+			}
+			tokenProximo = token;
+		}
+
+	}
+
+	 */
+
+
+
+
+public static void verificarParenteses(){
+	Stack<Parentese> s = new Stack<Parentese>();
+		int aberto = 0;
+		int fechado = 0;
+		if ( Token.TK_PARENTHESIS == token.getTipo()){
+			if (token.getTexto() == '(' ) { //String.valueOf -> transformar em string
+				System.out.println("aaaaaaaa");
+				aberto +=1;
+			}else{
+				fechado+=1;
+			}
+		}
+
+		if(aberto == fechado){
+			System.out.println("parentese certos");
+		}else{
+			System.out.println("Erro parentese não fechado");
+		}
+	}
+
+
 }
 
