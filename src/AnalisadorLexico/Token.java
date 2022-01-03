@@ -1,21 +1,27 @@
 package AnalisadorLexico;
 
+import java.nio.charset.Charset;
+
 public class Token {
 
     //codigos pra identificar os negocinhos
-    public static final int TK_IDENT = 0;
-    public  static final int TK_NUMBER = 1;
-    public static final int TK_OPERATION = 2;
-    public static  final int TK_PONCTUATION = 3;
-    public static final int TK_ASSIGNMENT = 4;
-    public static final int TK_OTHER = 5;
+    public static final int TK_LETRA = 0;
+    public static final int TK_OPERATION = 1;
+    public static final int TK_NEGATION = 2;
+    public static final int TK_PARENTHESIS = 3;
+    public static final int TK_SPACE = 4;
+
 
     public static final String TK_TEXT[] = {
-            "IDENTIFIER", "NUMBER", "OPERATOR", "PONCTUACTION", "ASSIGNMENT", "OTHER"
+            "LETRA", 
+            "OPERATOR", 
+            "NEGATION", 
+            "PARENTHESIS",
+            "SPACE"
     };
 
     private int tipo;
-    private String texto;
+    private char texto;
     private int linha;
     private int coluna;
 
@@ -34,11 +40,11 @@ public class Token {
         this.tipo = tipo;
     }
 
-    public String getTexto() {
+    public char getTexto() {
         return texto;
     }
 
-    public void setTexto(String texto) {
+    public void setTexto(char texto) {
         this.texto = texto;
     }
 
@@ -62,6 +68,6 @@ public class Token {
     public String toString() {
         return "Token[" +
                 "tipo=" + tipo +
-                ", texto=" + texto + ']';
+                "texto=" + texto + "]\n";
     }
 }

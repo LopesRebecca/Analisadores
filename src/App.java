@@ -9,16 +9,10 @@ public class App {
         try{
             AnalisadorLexico aLexico = new AnalisadorLexico("src/input.txt");
             AnalisadorSintatico aSintatico = new AnalisadorSintatico(aLexico);
-            Token token = null;
 
-            aSintatico.JuntandoGeral();
-            System.out.println("Compilation Successful!");
-            do {
-                token = aLexico.proximoToken();
-                if(token != null) {
-                    System.out.println(token);
-                }
-            }while(token != null);
+            aSintatico.juntandoGeral();
+            System.out.println("\nCompilation Successful!");
+          
 
         }catch (ExpectionLexico e) {
             System.out.println("Erro Lexico: " +e.getMessage());

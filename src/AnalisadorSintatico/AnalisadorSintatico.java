@@ -11,45 +11,111 @@ import AnalisadorLexico.Token;
 
 public class AnalisadorSintatico {
 
-    private AnalisadorLexico aLexico;
-    private Token token;
-    private String formula;
+	private AnalisadorLexico aLexico;
+	private Token token;
+	private Token tokenAnterior;
+	private Token tokenProximo;
+//	private String formula;
 
-    //recebendo o analisador lexico como parametro
-    public  AnalisadorSintatico(AnalisadorLexico aLexico){
-        this.aLexico = aLexico;
-//        this.token = token;
-    }
+	public AnalisadorSintatico(AnalisadorLexico aLexico) {
+		this.aLexico = aLexico;
+	}
 
-    public void JuntandoGeral() {
-        TipoDeIdentidade();
-        VerificarToken();
-        Operador();
+	public void juntandoGeral() {
+		primeiro();
+		verificarToken();
+	}
+	
+	public void primeiro() {
+		token = aLexico.proximoToken();
+		System.out.print(token);
+		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_NEGATION && token.getTipo() != Token.TK_PARENTHESIS
+				&& token.getTipo() != Token.TK_SPACE)
+			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+		
+		tokenAnterior = token;
+	}
 
-    }
+	// verificar se e o ultimo token
+	public void verificarToken() {
+		token = aLexico.proximoToken();
+		System.out.print(token);
+		if (token != null) {
 
-    //verificar se e o ultimo token
-    public void VerificarToken() {
-        token = aLexico.proximoToken();
-        if (token != null) {
-            Operador(); //verificar se há uma operador
-            TipoDeIdentidade();
-            VerificarToken();
-        }
-    }
+			switch (tokenAnterior.getTipo()) {
+			case 0:
+				Letra();
+				verificarToken();
+				break;
+			case 1:
+				operador();
+				verificarToken();
+				break;
+			case 2:
+				negacao();
+				verificarToken();
+				break;
+			case 3:
+				parenteses();
+				verificarToken();
+				break;
+			case 4:
+				espaco();
+				verificarToken();
+				break;
+			default:
+				throw new ExceptionSintatico("Formula invalida");
+			}
 
-    //julgando a identidade
-    public void TipoDeIdentidade() {
-        token = aLexico.proximoToken();
-        if (token.getTipo() != Token.TK_IDENT && token.getTipo() != Token.TK_NUMBER && token.getTipo() != Token.TK_ASSIGNMENT) {
-            throw new ExceptionSintatico("ID ou Numero não esperado");
-        }
+		}
+	}
 
-    }
+//Julgando a identidade
+	public void Letra() {
+		if (token.getTipo() != Token.TK_NEGATION && token.getTipo() != Token.TK_OPERATION
+			&& token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_SPACE){
+			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+		}
+		tokenAnterior = token;
+	}
 
-    public void Operador() {
-        if (token.getTipo() != Token.TK_OPERATION) {
-            throw new ExceptionSintatico("Operator Expected, found "+Token.TK_TEXT[token.getTipo()]+" ("+token.getTexto()+")  at LINE "+token.getLinha()+" and COLUMN "+token.getColuna());
-        }
-    }
+	public void operador() {
+		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_SPACE) {
+			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+		}
+		tokenAnterior = token;	
+	}
+	
+	public void negacao() {
+		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_NEGATION){
+			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+		}
+		tokenAnterior = token;
+	}
+	public void parenteses() {
+		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_NEGATION
+				&& token.getTipo() != Token.TK_OPERATION && token.getTipo() != Token.TK_SPACE){
+			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+		}
+		tokenAnterior = token;
+	}
+	
+	public void espaco() {
+		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_NEGATION
+				&& token.getTipo() != Token.TK_OPERATION && token.getTipo() != Token.TK_SPACE){
+			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
+		}
+		tokenAnterior = token;
+	}
+	
+//	public void proximoElemento() {
+//		AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());
+//		tokenProximo = analisarProximo.proximoToken();
+//		
+//		if(tokenProximo.getTipo() == Token.TK_SPACE){
+//			proximoElemento();
+//		}
+//		
+//	}
 }
+

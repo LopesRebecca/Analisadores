@@ -15,11 +15,10 @@ public class AnalisadorLexico {
 	public AnalisadorLexico() {
 	}
 
-	public AnalisadorLexico(char[] formula, int estado, int pos, int linha, int coluna) {
+	public AnalisadorLexico(char[] formula, int estado, int pos) {
 		this.formula = formula;
 		this.estado = estado;
 		this.posicao = pos;
-
 	}
 
 	public char[] getFormula() {
@@ -64,91 +63,107 @@ public class AnalisadorLexico {
 		char formulaDaVez;
 		Token token;
 		String termo = " ";
-		estado = 0;
-
+		
 		if (finalDoArquivo()) {
 			return null;
 		}
+		
+		formulaDaVez = proximo();
 
-		while (true) {
-			formulaDaVez = proximo();
+		token = new Token();
 
-			token = new Token();
-
-			switch (estado) {
-			case 0:
-				if(letra(formulaDaVez)) {
-					termo += formulaDaVez;
-					estado = 1;
-				} else if (numerico(formulaDaVez)) {
-					estado = 3;
-				} else if (espacamento(formulaDaVez)) {
-					estado = 0;
-				} else if (operadores(formulaDaVez)) {
-					estado = 5;
-				} else if (auxiliares(formulaDaVez)) {
-					estado = 5;
-				} else {
-					throw new ExpectionLexico("Erro simbolo incorreto");
-				}
-				break;
-			case 1:
-				if (letra(formulaDaVez) || numerico(formulaDaVez) || auxiliares(formulaDaVez)) {
-					termo += formulaDaVez;
-					estado = 1;
-				} else if (espacamento(formulaDaVez) || operadores(formulaDaVez) || auxiliares(formulaDaVez)) {
-					estado = 2;
-				} else {
-					throw new ExpectionLexico("Erro identificador mal formulado");
-				}
-				break;
-			case 2:
-				back();
-				token.setTipo(Token.TK_IDENT);
-				token.setTexto(termo);
+			if (letra(formulaDaVez)) {
+				termo += formulaDaVez;
+				token.setTexto(formulaDaVez);
+				token.setTipo(Token.TK_LETRA);
+				
 				return token;
-
-			case 3:
-				if (numerico(formulaDaVez)) {
-					termo += formulaDaVez;
-					estado = 3;
-				} else if (!letra(formulaDaVez)) {
-					estado = 4;
-				} else {
-					throw new ExpectionLexico("Erro numerico");
-				}
-
-			case 4:
-				token.setTipo(Token.TK_NUMBER);
-				token.setTexto(termo);
-				back();
+				
+			} else if (espacamento(formulaDaVez)) {
+				termo += formulaDaVez;
+				token.setTexto(formulaDaVez);
+				token.setTipo(Token.TK_SPACE);
+				
 				return token;
-
-			case 5:
-				termo += formulaDaVez;//.
+				
+			} else if (operadores(formulaDaVez)) {
+				termo += formulaDaVez;
+				token.setTexto(formulaDaVez);
 				token.setTipo(Token.TK_OPERATION);
-				token.setTexto(termo);
+				
+				return token;				
+			} else if (negacao(formulaDaVez)) {
+				estado = 4;
+				token.setTexto(formulaDaVez);
+				token.setTipo(Token.TK_NEGATION);
+				
 				return token;
-
-			default:
-				throw new IllegalStateException("Unexpected value: " + estado);
+			} else if (auxiliares(formulaDaVez)) {
+				estado = 5;
+				token.setTexto(formulaDaVez);
+				token.setTipo(Token.TK_PARENTHESIS);
+				
+				return token;	
+			} else {
+				throw new ExpectionLexico("Erro simbolo incorreto");
 			}
 		}
-	}
+//				break;
+//			case 1:
+//				if (letra(formulaDaVez) || auxiliares(formulaDaVez)) {
+//					termo += formulaDaVez;
+//					estado = 1;
+//				} else if (espacamento(formulaDaVez) || operadores(formulaDaVez) || auxiliares(formulaDaVez)) {
+//					if(!finalDoArquivo())
+//						back();
+//					token = new Token();
+//					token.setTipo(Token.TK_IDENT);
+//					token.setTexto(termo);
+//					
+//					return token;
+//				} else {
+//					throw new ExpectionLexico("Erro identificador mal formulado");
+//				}
+//				break;
+//			case 2:
+//				back();
+//				token.setTipo(Token.TK_IDENT);
+//				token.setTexto(termo);
+//				return token;
+//			case 3:
+//				termo += formulaDaVez;//.
+//				token.setTipo(Token.TK_OPERATION);
+//				token.setTexto(termo);
+//				return token;
+//			case 4:
+//				termo += formulaDaVez;
+//				token.setTipo(Token.TK_NEGATION);
+//				token.setTexto(termo);
+//				return token;
+//			case 5:
+//				termo += formulaDaVez;//.
+//				token.setTipo(Token.TK_PARENTHESIS);
+//				token.setTexto(termo);
+//				return token;
+//				
+//			default:
+//				throw new IllegalStateException("Unexpected value: " + estado);
+//			}
+//		}
 
 	// definir os negocinhos da formula
-	private boolean numerico(char c) {
-		return (c >= '0' && c <= '9');
-	}
-
 	private boolean letra(char c) {
 		return (c >= 'a' && c <= 'z');
 	}
 
 	private boolean operadores(char c) {
-		return c == '-' || c == '#' || c == '&' || c == '>';
+		return c == '#' || c == '&' || c == '>';
 	}
-
+	
+	private boolean negacao(char c) {
+		return c =='-';
+	}
+	
 	private boolean espacamento(char c) {
 		return c == '\n' || c == '\t' || c == ' ' || c == '\r';
 	}
@@ -158,12 +173,10 @@ public class AnalisadorLexico {
 	}
 	// negocinhos definidos
 
-	// percorrer essa pra ngm ficar abandonado!
 	private char proximo() {
 		return formula[posicao++];
 	}
 
-	// ja acabou jessica?
 	private boolean finalDoArquivo() {
 		return posicao == formula.length;
 	}
