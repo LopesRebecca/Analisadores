@@ -10,7 +10,7 @@ import AnalisadorLexico.Token;
 public class AnalisadorSintatico {
 
 	private AnalisadorLexico aLexico;
-	private static Token token;
+	private Token token;
 	private Token tokenAnterior;
 //	private Token tokenProximo;
 //	private String formula;
@@ -56,7 +56,6 @@ public class AnalisadorSintatico {
 			case 3:
 				parenteses();
 				verificarToken();
-				verificarParenteses();
 				break;
 			case 4:
 				espaco();
@@ -66,11 +65,13 @@ public class AnalisadorSintatico {
 				throw new ExceptionSintatico("Formula invalida");
 			}
 		}else {
-			VerificarParenteses();
-			
+			verificarParenteses();
+			verificarOperadores();
 		}
 	}
 
+	
+	
 //Julgando a identidade
 	public void Letra() {
 		if (token.getTipo() != Token.TK_NEGATION && token.getTipo() != Token.TK_OPERATION
@@ -109,7 +110,7 @@ public class AnalisadorSintatico {
 		tokenAnterior = token;
 	}
 	
-	public void VerificarParenteses() {
+	public void verificarParenteses() {
 		char[] listaParentese = aLexico.getFormula();
 				
 		String formula ="";
@@ -146,6 +147,46 @@ public class AnalisadorSintatico {
 		}
 	}
 	
+	public void verificarOperadores() {
+		char[] listaParentese = aLexico.getFormula();
+		
+		String formula ="";
+		
+		for(char letra : listaParentese) {
+			if(caracter(letra)) {
+				formula += letra;
+			}
+			if(operadores(letra)){
+				formula += letra;
+			}
+		}
+		
+		int operador =1;
+		int letra = 0;
+		
+		for(char verificador : formula.toCharArray()) {
+	
+			if(caracter(verificador)) {
+				letra++;
+			}
+			else {
+				operador++;
+			}
+		}
+		if(!(letra%operador == 0)) {
+			throw new ExceptionSintatico("Sintaxe do operador invalida");
+		}
+			
+
+	}
+	
+	boolean caracter(char c) {
+		return (c >= 'a' && c <= 'z');
+	}
+
+	boolean operadores(char c) {
+		return (c == '#' || c == '&' || c == '>');
+	}
 //	public void proximoElemento() {
 //		AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());
 //		tokenProximo = analisarProximo.proximoToken();
