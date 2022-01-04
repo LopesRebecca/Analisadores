@@ -2,9 +2,7 @@ package AnalisadorSintatico;
 
 import Exeptions.ExceptionSintatico;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Stack;
 
 import AnalisadorLexico.AnalisadorLexico;
 import AnalisadorLexico.Token;
@@ -14,7 +12,7 @@ public class AnalisadorSintatico {
 	private AnalisadorLexico aLexico;
 	private Token token;
 	private Token tokenAnterior;
-	private Token tokenProximo;
+//	private Token tokenProximo;
 //	private String formula;
 
 	public AnalisadorSintatico(AnalisadorLexico aLexico) {
@@ -66,7 +64,9 @@ public class AnalisadorSintatico {
 			default:
 				throw new ExceptionSintatico("Formula invalida");
 			}
-
+		}else {
+			VerificarParenteses();
+			
 		}
 	}
 
@@ -106,6 +106,43 @@ public class AnalisadorSintatico {
 			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
 		}
 		tokenAnterior = token;
+	}
+	
+	public void VerificarParenteses() {
+		char[] listaParentese = aLexico.getFormula();
+				
+		String formula ="";
+		
+		for( char c : listaParentese) {
+			if(c == '(' || c == ')') {
+				formula += c;
+			}
+		}
+
+		Stack<Character> parenteses = new Stack<Character>();
+		
+		for (char verificador : formula.toCharArray()) {
+
+			if(verificador == '(') {
+				parenteses.push(verificador);
+			}else {
+				if (parenteses.isEmpty()) {
+					throw new ExceptionSintatico("Parentese invalido");
+				}else {
+					char fechamento = (Character) parenteses.peek();
+					
+					if (verificador == ')' && fechamento == '(') {
+						parenteses.pop();
+					} else {
+						throw new ExceptionSintatico("Parentese invalido");
+					}
+				}
+			}
+		}if(parenteses.isEmpty()) {
+			
+		}else {
+			throw new ExceptionSintatico("Parentese invalido");
+		}
 	}
 	
 //	public void proximoElemento() {

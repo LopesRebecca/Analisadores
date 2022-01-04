@@ -74,82 +74,44 @@ public class AnalisadorLexico {
 
 			if (letra(formulaDaVez)) {
 				termo += formulaDaVez;
-				token.setTexto(formulaDaVez);
+				token.setValor(formulaDaVez);
 				token.setTipo(Token.TK_LETRA);
-				
+				token.setTexto(termo);
 				return token;
 				
 			} else if (espacamento(formulaDaVez)) {
 				termo += formulaDaVez;
-				token.setTexto(formulaDaVez);
+				token.setValor(formulaDaVez);
 				token.setTipo(Token.TK_SPACE);
+				token.setTexto(termo);
 				
 				return token;
 				
 			} else if (operadores(formulaDaVez)) {
 				termo += formulaDaVez;
-				token.setTexto(formulaDaVez);
+				token.setValor(formulaDaVez);
 				token.setTipo(Token.TK_OPERATION);
+				token.setTexto(termo);
 				
 				return token;				
 			} else if (negacao(formulaDaVez)) {
 				estado = 4;
-				token.setTexto(formulaDaVez);
+				token.setValor(formulaDaVez);
 				token.setTipo(Token.TK_NEGATION);
-				
+				token.setTexto(termo);
+
 				return token;
 			} else if (auxiliares(formulaDaVez)) {
 				estado = 5;
-				token.setTexto(formulaDaVez);
+				token.setValor(formulaDaVez);
 				token.setTipo(Token.TK_PARENTHESIS);
-				
+				token.setTexto(termo);
+
 				return token;	
 			} else {
 				throw new ExpectionLexico("Erro simbolo incorreto");
 			}
 		}
-//				break;
-//			case 1:
-//				if (letra(formulaDaVez) || auxiliares(formulaDaVez)) {
-//					termo += formulaDaVez;
-//					estado = 1;
-//				} else if (espacamento(formulaDaVez) || operadores(formulaDaVez) || auxiliares(formulaDaVez)) {
-//					if(!finalDoArquivo())
-//						back();
-//					token = new Token();
-//					token.setTipo(Token.TK_IDENT);
-//					token.setTexto(termo);
-//					
-//					return token;
-//				} else {
-//					throw new ExpectionLexico("Erro identificador mal formulado");
-//				}
-//				break;
-//			case 2:
-//				back();
-//				token.setTipo(Token.TK_IDENT);
-//				token.setTexto(termo);
-//				return token;
-//			case 3:
-//				termo += formulaDaVez;//.
-//				token.setTipo(Token.TK_OPERATION);
-//				token.setTexto(termo);
-//				return token;
-//			case 4:
-//				termo += formulaDaVez;
-//				token.setTipo(Token.TK_NEGATION);
-//				token.setTexto(termo);
-//				return token;
-//			case 5:
-//				termo += formulaDaVez;//.
-//				token.setTipo(Token.TK_PARENTHESIS);
-//				token.setTexto(termo);
-//				return token;
-//				
-//			default:
-//				throw new IllegalStateException("Unexpected value: " + estado);
-//			}
-//		}
 
 	// definir os negocinhos da formula
 	private boolean letra(char c) {

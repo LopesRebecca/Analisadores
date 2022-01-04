@@ -12,7 +12,7 @@ public class App {
 
             aSintatico.juntandoGeral();
             System.out.println("\nCompilation Successful!");
-          
+            
 
         }catch (ExpectionLexico e) {
             System.out.println("Erro Lexico: " +e.getMessage());
