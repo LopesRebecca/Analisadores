@@ -28,12 +28,12 @@ Para executar o algoritmo deve ser aberto o arquivo `App.java` e compilado
   2. `java NomeDoArquivo`
 
 
-# Equipe
+# Desenvolvedores
 
 ## Membros
-[<img src = "https://avatars.githubusercontent.com/u/57471802?v=4" width="115"><br><sub>Davi Fernandes</sub>](https://github.com/Davizex)
+[Davi Fernandes](https://github.com/Davizex)
 
-[<img src = "https://avatars.githubusercontent.com/u/82542224?v=4" width="115"><br><sub>Rebecca Lelis</sub>](https://github.com/LopesRebecca)
+[Rebecca Lelis](https://github.com/LopesRebecca)
 
 
 
