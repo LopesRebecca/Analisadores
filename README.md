@@ -12,14 +12,13 @@ biblioteca abordado pela questão e verificar se sua escrita está correta
 
 # Informações Técnicas
 ## Biblioteca utilizada
-<img src = "https://github.com/LopesRebecca/Analisadores/biblioteca.png" width="800"><br><sub>Biblioteca das formulas</sub>
+<img src = "https://github.com/LopesRebecca/Analisadores/blob/main/biblioteca.jpeg" width="800"><br><sub>Biblioteca das formulas</sub>
 
 ## Pré-requisitos
 * Sistema Operacional - Linux, Windows, MacOs
 * Linguagem Utilizadas
     * Back end - Git e Java, para esse algoritmo foi utilizado o java 11.11.0
     * Front end - Totalmente feito em linha de comando, suas formulas são escritas em arquivo txt contido dentro da pasta `src`
-* Ambiente Virtual - Rstudio e Vscode
 * Arquivos de dados - a linguagem de marcação dos dados deve ser txt, nome do arquivo: `input.txt`
 
 ## Processo de execução
