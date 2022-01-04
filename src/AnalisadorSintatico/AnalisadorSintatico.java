@@ -3,9 +3,12 @@ package AnalisadorSintatico;
 import Exeptions.ExceptionSintatico;
 
 import java.util.Stack;
+import java.io.File;
+
 
 import AnalisadorLexico.AnalisadorLexico;
 import AnalisadorLexico.Token;
+
 
 public class AnalisadorSintatico {
 
@@ -109,7 +112,9 @@ public class AnalisadorSintatico {
 		}
 		tokenAnterior = token;
 	}
-	
+	//acabando de julgando e quendo ir pro ceu
+
+	//verificar parentese
 	public void verificarParenteses() {
 		char[] listaParentese = aLexico.getFormula();
 				
@@ -146,14 +151,15 @@ public class AnalisadorSintatico {
 			throw new ExceptionSintatico("Parentese invalido");
 		}
 	}
-	
+
+	//verificar seguencia de operadores e letras
 	public void verificarOperadores() {
-		char[] listaParentese = aLexico.getFormula();
+		char[] listaParentese = aLexico.getFormula(); //pega formula
 		
 		String formula ="";
 		
-		for(char letra : listaParentese) {
-			if(caracter(letra)) {
+		for(char letra : listaParentese) { //percorre a formula
+			if(caracter(letra)) {          // letra -> variavel da formula da vez
 				formula += letra;
 			}
 			if(operadores(letra)){
@@ -179,7 +185,35 @@ public class AnalisadorSintatico {
 			
 
 	}
-	
+
+	//verificar negação
+	public void vericadorNegacao(){
+		char [] expressao = aLexico.getFormula();
+		String formula = "";
+
+		for(char letra : expressao) {
+			if(caracter(letra)) {
+				formula += letra;
+			}
+			if(operadores(letra)){
+				formula += letra;
+			}
+			if(negacao(letra)){
+				formula += letra;
+			}
+		}
+
+		char[] expressao1 = formula.toCharArray();
+
+		for(int pos = 1; pos < expressao1.length; pos++){
+			if(negacao(expressao1[pos]) && operadores(expressao1[pos+1])){
+				throw new ExceptionSintatico("Sintaxe da negação invalida");
+			}
+		}
+
+	}
+
+	//metodos dos negocinhos da formula
 	boolean caracter(char c) {
 		return (c >= 'a' && c <= 'z');
 	}
@@ -187,14 +221,10 @@ public class AnalisadorSintatico {
 	boolean operadores(char c) {
 		return (c == '#' || c == '&' || c == '>');
 	}
-//	public void proximoElemento() {
-//		AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());
-//		tokenProximo = analisarProximo.proximoToken();
-//		
-//		if(tokenProximo.getTipo() == Token.TK_SPACE){
-//			proximoElemento();
-//		}
-//		
-//	}
+
+	private boolean negacao(char c) {
+		return c =='-';
+	}
+
 }
 
