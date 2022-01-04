@@ -10,7 +10,7 @@ import AnalisadorLexico.Token;
 public class AnalisadorSintatico {
 
 	private AnalisadorLexico aLexico;
-	private Token token;
+	private static Token token;
 	private Token tokenAnterior;
 //	private Token tokenProximo;
 //	private String formula;
@@ -56,6 +56,7 @@ public class AnalisadorSintatico {
 			case 3:
 				parenteses();
 				verificarToken();
+				verificarParenteses();
 				break;
 			case 4:
 				espaco();
