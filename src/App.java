@@ -3,6 +3,7 @@ import AnalisadorLexico.Token;
 import AnalisadorSintatico.AnalisadorSintatico;
 import Exeptions.ExceptionSintatico;
 import Exeptions.ExpectionLexico;
+import conversor.Conversor;
 
 public class App {
     public static void main(String[] args) {
@@ -10,9 +11,13 @@ public class App {
             AnalisadorLexico aLexico = new AnalisadorLexico("src/input.txt");
             AnalisadorSintatico aSintatico = new AnalisadorSintatico(aLexico);
 
-            aSintatico.juntandoGeral();
-            System.out.println("\nCompilation Successful!");
+            aSintatico.verificador();
+            System.out.println("\nVerificação foi um sucesso!");
             
+            System.out.println("\n\n Iniciando conversão");
+            
+            Conversor conversor = new Conversor();
+            conversor.getClauses("(a # b) & (a #(a # b))");
 
         }catch (ExpectionLexico e) {
             System.out.println("Erro Lexico: " +e.getMessage());
