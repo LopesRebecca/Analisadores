@@ -17,7 +17,7 @@ public class App {
 
         do{
             //falando o que é
-            System.out.println("Sistema de Verificação de fórmula proposicional e Conversor de qualquer formla proposicional em " +
+            System.out.println("Sistema de Analise de fórmula proposicional e Conversor de qualquer formla proposicional em " +
                     "uma equivalente na forma normal conjuntiva");
 
             System.out.print("##--Teste Estrutura de Menu--##\n\n");
@@ -26,7 +26,7 @@ public class App {
             System.out.print("| Opção 2 - Converter Formula |\n");
             System.out.print("| Opção 3 - Sair              |\n");
             System.out.print("|-----------------------------|\n");
-            System.out.print("Digite uma opção: ");
+            System.out.print("Digite um numero quivalente a sua escolha: ");
 
             escolha = input.nextInt(); // gravando a escolha
 
@@ -40,7 +40,7 @@ public class App {
                         //chamando a função
                         aSintatico.verificador();
 
-                        System.out.println("\nVerifição foi um sucesso!");
+                        System.out.println("\nAnalise foi um sucesso!");
 
                     }catch (ExceptionLexico e) {
                         System.out.println("Erro Lexico: " +e.getMessage());
@@ -66,8 +66,8 @@ public class App {
                         //chamando a função
                         aSintatico.verificador();
 
-                        System.out.println("\nVerificação de formula completa!");
-                        System.out.println("\n\n Iniciando conversão");
+                        System.out.println("\nAnalise de formula completa!");
+                        System.out.println("\n\n Iniciando equilavencia de formula");
 
                         conversor.getClauses("(a > b)");
 
@@ -78,7 +78,7 @@ public class App {
                         System.out.println("\n Erro Sintatico: " +e.getMessage());
                         e.printStackTrace();
                     }catch (ExceptionConversor e){
-                        System.out.println("Erro de conversão " + e.getMessage());
+                        System.out.println("Erro de equivalencia " + e.getMessage());
                         e.printStackTrace();
                     }catch (Exception e) {
                         System.out.println("Erro generico!!");
