@@ -1,23 +1,93 @@
 package conversor;
 
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;	
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Conversor {
 
 	private int clause = 0;
+	private String formula;
+	private String formulaConvertida;
 
 	public Conversor() {}
 
-	public void getClauses(String formula) {
-
-		System.out.print(formula+ "\n");
+	public void converter(String filename) {
 		
-		String[] clauseForm = formula.split("[\\(||\\)]");
-		
-		for(int i =0; i < clauseForm.length;i++) {
-			System.out.print(clauseForm[i]);
+		try{
+			this.formula = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
+			System.out.println(formula);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		conversion(clauseForm);
+		String[] formulaArray = formula.split("[\\(||\\)]");
+		formulaConvertida = "";
+		
+		translate(formulaArray);
+	}
 
+	String translate(String[] formula) {
+		String auxiliar = "";
+		
+		for(int i = formula.length-1; i > -1; i--) {
+			if (i == formula.length-1){
+				auxiliar = formula[i].replaceAll("\\s","");
+				formula[i] = chageType(auxiliar);
+			}else {
+				
+			}
+		}
+		
+		return null;
+	}
+	private String chageType(String auxiliar) {
+		
+		Pattern implica = Pattern.compile("[a-z][#][a-z]");	
+		Pattern disjuncao = Pattern.compile("[-][a-z][#][a-z]");	
+		Pattern conjucao = Pattern.compile("[-][a-z][&][a-z]");	
+		Pattern morgan = Pattern.compile("[a-z][#][a-z][&][a-z]");	
+
+		Matcher i = implica.matcher(auxiliar);
+		Matcher d = disjuncao.matcher(auxiliar);
+		Matcher c = conjucao.matcher(auxiliar);
+		Matcher m = morgan.matcher(auxiliar);
+		
+		boolean a = i.matches();
+		boolean b = d.matches();
+		boolean e = c.matches();
+		boolean f = m.matches();
+
+		
+		if(	a) {
+			return "1";
+		}else if(b) {
+			return "2";
+		}else if(e) {
+			return "3";
+		}else if(f) {
+			return "4";
+		}else
+			return auxiliar;
+	}
+
+	/*
+	(x > y)     = (-x # y)
+	-(x # y)    = (-x & -y)
+	-(x & y)    = (-x # -y)
+	--x         = x
+	x # (y & z) = (x # y) & (x # y)
+	 */
+	
+	
+	
+	
+	
+	
+	
+	
 //		Stack<Character> stack = new Stack<Character>();
 //
 //		for (char element : formula.toCharArray()) {
@@ -74,18 +144,16 @@ public class Conversor {
 //		for (int i = 0; i < clauseForm.length; i++) {
 //			System.out.print(clauseForm[i]);
 //		}
-
-	}
-
-	public  String[] conversion(String[] list){
-		for(int i = 0; i < list.length; i--){
-			System.out.println("aaa");
-			if(list[i] == ">"){
-				System.out.println("não entra na condição");
-			}
-		}
-		return list;
-	}
+//
+//	public  String[] conversion(String[] list){
+//		for(int i = 0; i < list.length; i--){
+//			System.out.println("aaa");
+//			if(list[i] == ">"){
+//				System.out.println("não entra na condição");
+//			}
+//		}
+//		return list;
+//	}
 
 	public String[] notNullString(String[] list) {
 		for (int i = 0; i < list.length; i++) {

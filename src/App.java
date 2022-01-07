@@ -69,7 +69,7 @@ public class App {
                         System.out.println("\nAnalise de formula completa!");
                         System.out.println("\n\n Iniciando equilavencia de formula");
 
-                        conversor.getClauses("(a > b)");
+                        conversor.converter("src/input.txt");
 
                     }catch (ExceptionLexico e) {
                         System.out.println("Erro Lexico: " +e.getMessage());
