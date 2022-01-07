@@ -1,7 +1,5 @@
 package conversor;
 
-import java.util.Stack;
-
 public class Conversor {
 
 	private int clause = 0;
@@ -17,6 +15,8 @@ public class Conversor {
 		for(int i =0; i < clauseForm.length;i++) {
 			System.out.print(clauseForm[i]);
 		}
+
+		conversion(clauseForm);
 
 //		Stack<Character> stack = new Stack<Character>();
 //
@@ -74,6 +74,17 @@ public class Conversor {
 //		for (int i = 0; i < clauseForm.length; i++) {
 //			System.out.print(clauseForm[i]);
 //		}
+
+	}
+
+	public  String[] conversion(String[] list){
+		for(int i = 0; i < list.length; i--){
+			System.out.println("aaa");
+			if(list[i] == ">"){
+				System.out.println("não entra na condição");
+			}
+		}
+		return list;
 	}
 
 	public String[] notNullString(String[] list) {
