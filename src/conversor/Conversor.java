@@ -2,9 +2,11 @@ package conversor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;	
+import java.util.regex.Pattern;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static java.lang.System.*;
 
 public class Conversor {
 
@@ -15,7 +17,7 @@ public class Conversor {
 	public Conversor() {}
 
 	public void converter(String filename) {
-		
+
 		try{
 			this.formula = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
 			System.out.println(formula);
@@ -25,52 +27,97 @@ public class Conversor {
 
 		String[] formulaArray = formula.split("[\\(||\\)]");
 		formulaConvertida = "";
-		
+
+		for (int i = 0; i < formulaArray.length; i++) {
+			String auxiliar = "";
+			if (formulaArray[i].matches("[-]") && formulaArray[i + 1].matches("[-][a-z]")) {
+				auxiliar = formulaArray[i].replaceAll("[-]", "[-][-][a-z]");
+				out.println(auxiliar);
+			}
+		}
+
 		translate(formulaArray);
 	}
 
 	String translate(String[] formula) {
 		String auxiliar = "";
-		
+
 		for(int i = formula.length-1; i > -1; i--) {
 			if (i == formula.length-1){
 				auxiliar = formula[i].replaceAll("\\s","");
 				formula[i] = chageType(auxiliar);
 			}else {
-				
+
 			}
 		}
-		
+
 		return null;
 	}
 	private String chageType(String auxiliar) {
-		
-		Pattern implica = Pattern.compile("[a-z][#][a-z]");	
-		Pattern disjuncao = Pattern.compile("[-][a-z][#][a-z]");	
-		Pattern conjucao = Pattern.compile("[-][a-z][&][a-z]");	
-		Pattern morgan = Pattern.compile("[a-z][#][a-z][&][a-z]");	
+
+		String nova = auxiliar;
+
+		out.println(auxiliar);
+
+		Pattern implica = Pattern.compile("[a-z][>][a-z]");
+		Pattern disjuncao = Pattern.compile("[-][a-z][#][a-z]");
+		Pattern conjucao = Pattern.compile("[-][a-z][&][a-z]");
+		Pattern negacao = Pattern.compile("[-][-][a-z]");
+		Pattern morgan = Pattern.compile("[a-z][#][a-z][&][a-z]");
 
 		Matcher i = implica.matcher(auxiliar);
 		Matcher d = disjuncao.matcher(auxiliar);
 		Matcher c = conjucao.matcher(auxiliar);
+		Matcher n = negacao.matcher(auxiliar);
 		Matcher m = morgan.matcher(auxiliar);
-		
+
+		/*
 		boolean a = i.matches();
 		boolean b = d.matches();
 		boolean e = c.matches();
 		boolean f = m.matches();
+		 */
 
-		
-		if(	a) {
-			return "1";
-		}else if(b) {
-			return "2";
-		}else if(e) {
-			return "3";
-		}else if(f) {
-			return "4";
-		}else
-			return auxiliar;
+		if (i.matches() != false) {
+			//(x > y)  = (-x # y)
+			out.println(i.matches());
+			String a =  "(-" +  auxiliar.replaceAll("\\>", "#")+ ")";
+			out.println(a);
+			nova += a;
+			//out.println(nova);
+		}
+		if(d.matches() != false) {
+			//-x#y = (-x & -y)
+			out.println(i.matches());
+			String a =  "(-" +  auxiliar.replaceAll("\\#", "& -") + ")";
+			out.println(d);
+
+		}
+		if (c.matches() != false) {
+			//-x&y = (-x # -y)
+			out.println(i.matches());
+			String a =  "(" +  auxiliar.replaceAll("\\&", "#") + ")";
+			out.println(c);
+
+		}
+		if (n.matches() != false) {
+			//--x  = x
+			//System.out.println(i.matches());
+			String a =  "(" +  auxiliar.replaceAll("\\-\\-", " ") + ")";
+			out.println(a);
+			auxiliar += a;
+		}
+		if (m.matches() != false) {
+			//x # y & z
+			// x # y & x # y
+			out.println(i.matches());
+			String a =  "(" +  auxiliar.replaceAll("\\&", " )&(x #")+ ")";
+			out.println(a);
+			//String b = a + "(-" +  auxiliar.replaceAll("\\&", "#")+ ")";
+
+		}
+
+		return auxiliar;
 	}
 
 	/*
@@ -80,14 +127,8 @@ public class Conversor {
 	--x         = x
 	x # (y & z) = (x # y) & (x # y)
 	 */
-	
-	
-	
-	
-	
-	
-	
-	
+
+
 //		Stack<Character> stack = new Stack<Character>();
 //
 //		for (char element : formula.toCharArray()) {
@@ -134,7 +175,7 @@ public class Conversor {
 //				} else {
 //					int startIndex = clauseForm[i].indexOf('(', clauseForm[i].indexOf('(') + 1);
 //					int endIndex = clauseForm[i].indexOf(')') + 1;
-//					
+//
 //					String removeClause = clauseForm[i].substring(startIndex, endIndex);
 //					clauseForm[i + 1] += clauseForm[i].substring(startIndex, endIndex);
 //					clauseForm[i] = clauseForm[i].replace(removeClause, "");

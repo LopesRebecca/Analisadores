@@ -13,7 +13,7 @@ public class AnalisadorSintatico {
 	private AnalisadorLexico aLexico;
 	private Token token;
 	private Token tokenAnterior;
-//	private Token tokenProximo;
+	private Token tokenProximo;
 //	private String formula;
 
 	public AnalisadorSintatico(AnalisadorLexico aLexico) {
@@ -24,14 +24,14 @@ public class AnalisadorSintatico {
 		primeiro();
 		verificarToken();
 	}
-	
+
 	public void primeiro() {
 		token = aLexico.proximoToken();
 		System.out.print(token);
 		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_NEGATION && token.getTipo() != Token.TK_PARENTHESIS
 				&& token.getTipo() != Token.TK_SPACE)
 			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
-		
+
 		tokenAnterior = token;
 	}
 
@@ -71,8 +71,8 @@ public class AnalisadorSintatico {
 		}
 	}
 
-	
-	
+
+
 //Julgando a identidade
 	public void Letra() {
 		if (token.getTipo() != Token.TK_NEGATION && token.getTipo() != Token.TK_OPERATION
@@ -86,9 +86,9 @@ public class AnalisadorSintatico {
 		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_SPACE) {
 			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
 		}
-		tokenAnterior = token;	
+		tokenAnterior = token;
 	}
-	
+
 	public void negacao() {
 		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_NEGATION){
 			throw new ExceptionSintatico("Sintaxe invalida, encontrada: " + token.getTexto() + "\n do tipo:" + token.getTipo());
@@ -102,7 +102,7 @@ public class AnalisadorSintatico {
 		}
 		tokenAnterior = token;
 	}
-	
+
 	public void espaco() {
 		if (token.getTipo() != Token.TK_LETRA && token.getTipo() != Token.TK_PARENTHESIS && token.getTipo() != Token.TK_NEGATION
 				&& token.getTipo() != Token.TK_OPERATION && token.getTipo() != Token.TK_SPACE){
@@ -110,20 +110,20 @@ public class AnalisadorSintatico {
 		}
 		tokenAnterior = token;
 	}
-	
+
 	public void verificarParenteses() {
 		char[] listaParentese = aLexico.getFormula();
-				
+
 		String formula ="";
-		
+
 		for( char c : listaParentese) {
 			if(c == '(' || c == ')') {
 				formula += c;
 			}
 		}
-		
+
 		Stack<Character> parenteses = new Stack<Character>();
-		
+
 		for (char verificador : formula.toCharArray()) {
 
 			if(verificador == '(') {
@@ -133,7 +133,7 @@ public class AnalisadorSintatico {
 					throw new ExceptionSintatico("Parentese invalido");
 				}else {
 					char fechamento = (Character) parenteses.peek();
-					
+
 					if (verificador == ')' && fechamento == '(') {
 						parenteses.pop();
 					} else {
@@ -142,17 +142,17 @@ public class AnalisadorSintatico {
 				}
 			}
 		}if(parenteses.isEmpty()) {
-			
+
 		}else {
 			throw new ExceptionSintatico("Parentese invalido");
 		}
 	}
-	
+
 	public void verificarOperadores() {
 		char[] listaParentese = aLexico.getFormula();
-		
+
 		String formula ="";
-		
+
 		for(char letra : listaParentese) {
 			if(caracter(letra)) {
 				formula += letra;
@@ -161,12 +161,12 @@ public class AnalisadorSintatico {
 				formula += letra;
 			}
 		}
-		
+
 		int operador =1;
 		int letra = 0;
-		
+
 		for(char verificador : formula.toCharArray()) {
-	
+
 			if(caracter(verificador)) {
 				letra++;
 			}
@@ -177,10 +177,10 @@ public class AnalisadorSintatico {
 		if(!(letra%operador == 0)) {
 			throw new ExceptionSintatico("Sintaxe do operador invalida");
 		}
-			
+
 
 	}
-	
+
 	boolean caracter(char c) {
 		return (c >= 'a' && c <= 'z');
 	}
@@ -188,14 +188,12 @@ public class AnalisadorSintatico {
 	boolean operadores(char c) {
 		return (c == '#' || c == '&' || c == '>');
 	}
-//	public void proximoElemento() {
-//		AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());
-//		tokenProximo = analisarProximo.proximoToken();
-//		
-//		if(tokenProximo.getTipo() == Token.TK_SPACE){
-//			proximoElemento();
-//		}
-//		
-//	}
+public void proximoElemento() {
+	AnalisadorLexico analisarProximo = new AnalisadorLexico(aLexico.getFormula(),aLexico.getEstado(), aLexico.getPosicao());		tokenProximo = analisarProximo.proximoToken();
+		if(tokenProximo.getTipo() == Token.TK_SPACE){
+			proximoElemento();
+		}
+
+	}
 }
 

@@ -26,7 +26,7 @@ public class App {
             System.out.print("| Opção 2 - Converter Formula |\n");
             System.out.print("| Opção 3 - Sair              |\n");
             System.out.print("|-----------------------------|\n");
-            System.out.print("Digite um numero quivalente a sua escolha: ");
+            System.out.print("Digite um numero equivalente a sua escolha: ");
 
             escolha = input.nextInt(); // gravando a escolha
 
@@ -58,6 +58,7 @@ public class App {
                 case 2:
                     try{
 
+                        /*
                         //instaciando os analisadores
                         AnalisadorLexico aLexico = new AnalisadorLexico("src/input.txt");
                         AnalisadorSintatico aSintatico = new AnalisadorSintatico(aLexico);
@@ -67,8 +68,11 @@ public class App {
                         aSintatico.verificador();
 
                         System.out.println("\nAnalise de formula completa!");
+
+                         */
                         System.out.println("\n\n Iniciando equilavencia de formula");
 
+                        Conversor conversor = new Conversor();
                         conversor.converter("src/input.txt");
 
                     }catch (ExceptionLexico e) {
