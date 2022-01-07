@@ -17,7 +17,7 @@ public class App {
             System.out.println("\n\n Iniciando conversão");
             
             Conversor conversor = new Conversor();
-            conversor.getClauses("(a # b) & (a #(a # b))");
+            conversor.getClauses("-(r > ((-p) & q) > (q > r))");
 
         }catch (ExpectionLexico e) {
             System.out.println("Erro Lexico: " +e.getMessage());
