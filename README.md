@@ -82,7 +82,7 @@ x # y & z
 ```
 
 ### Resultado exemplo conversão
-#### formula de exemplo utilizada: (x > z > z)
+#### formula de exemplo utilizada: (x > z)
 <img src = "https://github.com/LopesRebecca/Analisadores/blob/main/testes/Captura%20de%20tela_2022-01-07_22-54-58.png" width="300">
 
 *Resultado do teste de conversão*
