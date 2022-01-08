@@ -4,7 +4,8 @@
 Pequeno projeto realizado em java, codificação de Analisadores : Lexicos e Sintatico e um Conversor de qualquer fórmulas proposicional em uma equivalente na forma normal conjuntiva.
 
 ## Problema
-Indicar se a formula escrita pelo usuario é proposicional ou não e converte a formula proposicional em em uma formula equivalente na forma normal conjuntiva
+Indicar se a formula escrita pelo usuario é proposicional ou não e converte a formula proposicional em em uma formula equivalente na forma noormla conjuntiva
+
 
 ## Proprosta de solução
 Para esse probelma foi implementado dois analisadores, um analisador lexico e outro sintatico verificando se cada elemento da formula está dentro do conjunto de 
@@ -13,7 +14,9 @@ biblioteca abordado pela questão e verificar se sua escrita está correta, alem
 # Informações Técnicas
 ## Biblioteca utilizada
 Notação matematica usada na construção das formulas
-<img src = "https://github.com/LopesRebecca/Analisadores/blob/main/biblioteca.jpeg" width="900">
+
+<img src = "https://github.com/LopesRebecca/Analisadores/blob/main/biblioteca.jpeg" width="800"><br><sub>Biblioteca das formulas</sub>
+
 
 *Biblioteca das formulas*
 
