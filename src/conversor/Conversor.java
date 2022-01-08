@@ -39,31 +39,29 @@ public class Conversor {
 		translate(formulaArray);
 	}
 
-	String translate(String[] formula) {
+	public void translate(String[] formula) {
 		String auxiliar = "";
 
 		for(int i = formula.length-1; i > -1; i--) {
-			if (i == formula.length-1){
 				auxiliar = formula[i].replaceAll("\\s","");
-				formula[i] = chageType(auxiliar);
-			}else {
-
-			}
+				auxiliar = auxiliar.replaceAll("[()]","");
+						
+				if(!(i == 0)) {
+					formula[i-1] += chageType(auxiliar);
+				}
 		}
-
-		return null;
+		formula[0] = formula[0].replace("--", "");
+		
+		System.out.print("\n\n"+formula[0]+"\n\n\n");
 	}
 	private String chageType(String auxiliar) {
 
-		String nova = auxiliar;
 
-		out.println(auxiliar);
-
-		Pattern implica = Pattern.compile("[a-z][>][a-z]");
-		Pattern disjuncao = Pattern.compile("[-][a-z][#][a-z]");
-		Pattern conjucao = Pattern.compile("[-][a-z][&][a-z]");
-		Pattern negacao = Pattern.compile("[-][-][a-z]");
-		Pattern morgan = Pattern.compile("[a-z][#][a-z][&][a-z]");
+		Pattern implica = Pattern.compile("[^[a-z][>][a-z]]");
+		Pattern disjuncao = Pattern.compile("[^[-][a-z][#][a-z]]");
+		Pattern conjucao = Pattern.compile("[^[-][a-z][&][a-z]]");
+		Pattern negacao = Pattern.compile("[^[-][-][a-z]]");
+		Pattern morgan = Pattern.compile("[^[a-z][#][a-z][&][a-z]]");
 
 		Matcher i = implica.matcher(auxiliar);
 		Matcher d = disjuncao.matcher(auxiliar);
@@ -71,53 +69,34 @@ public class Conversor {
 		Matcher n = negacao.matcher(auxiliar);
 		Matcher m = morgan.matcher(auxiliar);
 
-		/*
-		boolean a = i.matches();
-		boolean b = d.matches();
-		boolean e = c.matches();
-		boolean f = m.matches();
-		 */
-
-		if (i.matches() != false) {
+		String a = auxiliar;
+		
+		if (i.lookingAt()) {
 			//(x > y)  = (-x # y)
-			out.println(i.matches());
-			String a =  "(-" +  auxiliar.replaceAll("\\>", "#")+ ")";
-			out.println(a);
-			nova += a;
+			a =  "(-" +  auxiliar.replaceAll("\\>", "#")+ ")";
 			//out.println(nova);
 		}
-		if(d.matches() != false) {
+		else if(d.lookingAt()) {
 			//-x#y = (-x & -y)
-			out.println(i.matches());
-			String a =  "(-" +  auxiliar.replaceAll("\\#", "& -") + ")";
+			a =  "(-" +  auxiliar.replaceAll("\\#", "& -") + ")";
 			out.println(d);
-
 		}
-		if (c.matches() != false) {
+		else if (c.lookingAt()) {
 			//-x&y = (-x # -y)
-			out.println(i.matches());
-			String a =  "(" +  auxiliar.replaceAll("\\&", "#") + ")";
-			out.println(c);
-
+			a =  "(" +  auxiliar.replaceAll("\\&", "#") + ")";
 		}
-		if (n.matches() != false) {
+		else if (n.lookingAt()) {
 			//--x  = x
 			//System.out.println(i.matches());
-			String a =  "(" +  auxiliar.replaceAll("\\-\\-", " ") + ")";
-			out.println(a);
-			auxiliar += a;
+			a =  "(" +  auxiliar.replaceAll("\\-\\-", " ") + ")";
 		}
-		if (m.matches() != false) {
+		else if (m.lookingAt()) {
 			//x # y & z
 			// x # y & x # y
-			out.println(i.matches());
-			String a =  "(" +  auxiliar.replaceAll("\\&", " )&(x #")+ ")";
-			out.println(a);
+			a =  "(" +  auxiliar.replaceAll("\\&", " )&(x #")+ ")";
 			//String b = a + "(-" +  auxiliar.replaceAll("\\&", "#")+ ")";
-
 		}
-
-		return auxiliar;
+		return a;
 	}
 
 	/*
@@ -127,8 +106,6 @@ public class Conversor {
 	--x         = x
 	x # (y & z) = (x # y) & (x # y)
 	 */
-
-
 //		Stack<Character> stack = new Stack<Character>();
 //
 //		for (char element : formula.toCharArray()) {

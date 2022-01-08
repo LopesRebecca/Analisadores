@@ -16,16 +16,15 @@ public class App {
         Scanner input = new Scanner(System.in);
 
         do{
-            //falando o que é
-            System.out.println("Sistema de Analise de fórmula proposicional e Conversor de qualquer formla proposicional em " +
+            System.out.println("Sistema de Analise de formula proposicional e Conversor de qualquer formla proposicional em " +
                     "uma equivalente na forma normal conjuntiva");
 
             System.out.print("##--Teste Estrutura de Menu--##\n\n");
-            System.out.print("|-----------------------------|\n");
-            System.out.print("| Opção 1 - Verificar Formula |\n");
-            System.out.print("| Opção 2 - Converter Formula |\n");
-            System.out.print("| Opção 3 - Sair              |\n");
-            System.out.print("|-----------------------------|\n");
+            System.out.print("|------------------------------|\n");
+            System.out.print("| escolha 1 - Verificar Formula|\n");
+            System.out.print("| escolha 2 - Converter Formula|\n");
+            System.out.print("| escolha 3 - Sair             |\n");
+            System.out.print("|------------------------------|\n");
             System.out.print("Digite um numero equivalente a sua escolha: ");
 
             escolha = input.nextInt(); // gravando a escolha
@@ -37,10 +36,10 @@ public class App {
                         AnalisadorLexico aLexico = new AnalisadorLexico("src/input.txt");
                         AnalisadorSintatico aSintatico = new AnalisadorSintatico(aLexico);
 
-                        //chamando a função
+                        //chamando a function
                         aSintatico.verificador();
 
-                        System.out.println("\nAnalise foi um sucesso!");
+                        System.out.println("\n\nAnalise foi um sucesso!\n");
 
                     }catch (ExceptionLexico e) {
                         System.out.println("Erro Lexico: " +e.getMessage());
@@ -57,19 +56,6 @@ public class App {
 
                 case 2:
                     try{
-
-                        /*
-                        //instaciando os analisadores
-                        AnalisadorLexico aLexico = new AnalisadorLexico("src/input.txt");
-                        AnalisadorSintatico aSintatico = new AnalisadorSintatico(aLexico);
-                        Conversor conversor = new Conversor();
-
-                        //chamando a função
-                        aSintatico.verificador();
-
-                        System.out.println("\nAnalise de formula completa!");
-
-                         */
                         System.out.println("\n\n Iniciando equilavencia de formula");
 
                         Conversor conversor = new Conversor();
@@ -92,7 +78,6 @@ public class App {
                     break;
 
                 case 3:
-                    System.out.println("Só passamos raiva nessa merda!");
                     System.exit(0);
                     break;
 
@@ -101,8 +86,6 @@ public class App {
                     break;
             }
         }while (escolha != 3);
-
-
 
 
     }

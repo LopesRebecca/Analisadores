@@ -37,8 +37,8 @@ public class AnalisadorSintatico {
 
 	// verificar se e o ultimo token
 	public void verificarToken() {
-		token = aLexico.proximoToken();
 		System.out.print(token);
+		token = aLexico.proximoToken();
 		if (token != null) {
 
 			switch (tokenAnterior.getTipo()) {
