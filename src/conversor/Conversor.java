@@ -49,11 +49,7 @@ public class Conversor {
 				auxiliar = auxiliar.replaceAll("[()]","");
 						
 				if(!(i == 0)) {
-					formula[i] = chageType(auxiliar);
-					formula[i] = move(auxiliar);
-					formula[i] = doubleNegation(auxiliar);
-					formula[i-1] += distribute(auxiliar);
-
+					formula[i-1] = chageType(auxiliar);
 				}else {
 					formula[i] = chageType(auxiliar);
 				}
@@ -63,61 +59,86 @@ public class Conversor {
 		System.out.print("\n\n"+formula[0]+"\n\n\n");
 	}
 	
-	private String chageType(String auxiliar) {
+	private String chageType(String clause) {
 
-		Pattern implica = Pattern.compile("(?=[a-z][>][a-z])?{1}");
-//		Pattern disjuncao = Pattern.compile("([-][a-z][#][a-z])");
-//		Pattern conjucao = Pattern.compile("([-][a-z][&][a-z])");
-//		Pattern negacao = Pattern.compile("([-][-][a-z])");
-//		Pattern morgan = Pattern.compile("([a-z][#][a-z][&][a-z])");
+		Pattern implica = Pattern.compile("([a-z][>][a-z]){1}");
 
-		Matcher i = implica.matcher(auxiliar);
-//		Matcher d = disjuncao.matcher(auxiliar);
-//		Matcher c = conjucao.matcher(auxiliar);
-//		Matcher n = negacao.matcher(auxiliar);
-//		Matcher m = morgan.matcher(auxiliar);
+		Matcher i = implica.matcher(clause);
 
-		String a = auxiliar;
+		String result = clause;
+		String aux;
+		int start,end;
 		
 		if (i.lookingAt()) {
-			a =  	"(-" +  auxiliar.replaceAll("\\>", "#")+ ")";
-			int teste = i.groupCount();
-			int p = i.regionStart();
-			int l = i.regionEnd();
-			out.println(a);
+			start = i.start();
+			end = i.end();
+			
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\>", "#") + ")" + result.substring(end,result.length());
 		}
-//		else if(d.lookingAt()) {
-//			//-x#y = (-x & -y)
-//			a =  "(-" +  auxiliar.replaceAll("\\#", "& -") + ")";
-//			out.println(d);
-//		}
-//		else if (c.lookingAt()) {
-//			//-x&y = (-x # -y)
-//			a =  "(" +  auxiliar.replaceAll("\\&", "#") + ")";
-//		}
-//		else if (n.lookingAt()) {
-//			//--x  = x
-//			//System.out.println(i.matches());
-//			a =  "(" +  auxiliar.replaceAll("\\-\\-", " ") + ")";
-//		}
-//		else if (m.lookingAt()) {
-//			//x # y & z
-//			// x # y & x # y
-//			a =  "(" +  auxiliar.replaceAll("\\&", " )&(x #")+ ")";
-//			//String b = a + "(-" +  auxiliar.replaceAll("\\&", "#")+ ")";
-//		}
-		return a;
+		
+		return result;
 	}
 	
-	public String move(String auxiliar) {
+	public String move(String clause) {
+		Pattern disjuncao = Pattern.compile("([-][a-z][#][a-z]){1}");
+		Pattern conjucao = Pattern.compile("([-][a-z][&][a-z]){1}");
+		
+		Matcher d = disjuncao.matcher(clause);
+		Matcher c = conjucao.matcher(clause);
+		
+		String result = clause;
+		String aux;
+		int start,end;
+		
+		if(d.lookingAt()) {
+			//-x#y = (-x & -y)
+			result =  "(-" +  clause.replaceAll("\\#", "& -") + ")";
+			out.println(d);
+		}
+		else if (c.lookingAt()) {
+			//-x&y = (-x # -y)
+			result =  "(" +  clause.replaceAll("\\&", "#") + ")";
+		}
+		
+		
 		return null;
 	}
 	
-	public String doubleNegation(String auxiliar) {
+	public String doubleNegation(String clause) {
+		Pattern negacao = Pattern.compile("([-][-][a-z]){1}");
+
+		Matcher n = negacao.matcher(clause);
+		
+		String result = clause;
+		String aux;
+		int start,end;
+		
+		if (n.lookingAt()) {
+			//--x  = x
+			//System.out.println(i.matches());
+			aux =  "(" +  clause.replaceAll("\\-\\-", " ") + ")";
+		}
+		
 		return null;
 	}
 	
-	public String distribute(String auxiliar) {
+	public String distribute(String clause) {
+		Pattern morgan = Pattern.compile("([a-z][#][a-z][&][a-z]){1}");
+		
+		Matcher m = morgan.matcher(clause);
+
+		String result = clause;
+		String aux;
+		int start,end;
+		
+		if (m.lookingAt()) {
+			//x # y & z
+			// x # y & x # y
+			result =  "(" +  clause.replaceAll("\\&", " )&(x #")+ ")";
+			//String b = a + "(-" +  auxiliar.replaceAll("\\&", "#")+ ")";
+		}
+		
 		return null;
 	}
 	
@@ -144,9 +165,7 @@ public class Conversor {
 	public void setClause(int clause) {
 		this.clause = clause;
 	}
-	
-	
-	
+
 	/*
 	(x > y)     = (-x # y)
 	-(x # y)    = (-x & -y)
