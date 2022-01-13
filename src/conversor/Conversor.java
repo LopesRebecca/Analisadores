@@ -96,13 +96,18 @@ public class Conversor {
 		int start,end;
 		
 		if(d.lookingAt()) {
-			//-x#y = (-x & -y)
-			result =  "(-" +  clause.replaceAll("\\#", "& -") + ")";
-			out.println(d);
+			start = d.start();
+			end = d.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\#", "& -") + ")" + result.substring(end,result.length());
 		}
 		else if (c.lookingAt()) {
-			//-x&y = (-x # -y)
-			result =  "(" +  clause.replaceAll("\\&", "#") + ")";
+			start = c.start();
+			end = c.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", "#" + ")" ) + result.substring(end,result.length());
 		}
 		
 		
@@ -119,8 +124,11 @@ public class Conversor {
 		int start,end;
 		
 		if (n.lookingAt()) {
+			start = n.start();
+			end = n.end();
 
-			aux =  "(" +  clause.replaceAll("\\-\\-", "") + ")";
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\-\\-", " ") + ")" + result.substring(end,result.length());
 		}
 		
 		return result;
@@ -136,7 +144,11 @@ public class Conversor {
 		int start,end;
 		
 		if (m.lookingAt()) {
-			result =  "(" +  clause.replaceAll("\\&", " )&(x #")+ ")";
+			start = m.start();
+			end = m.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", ") & ( x ") + ")" + result.substring(end,result.length());
 		}
 		
 		return result;
