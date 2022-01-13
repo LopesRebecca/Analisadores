@@ -81,6 +81,7 @@ public class Conversor {
 	}
 	
 	public String move(String clause) {
+
 		Pattern disjuncao = Pattern.compile("([-][a-z][#][a-z]){1}");
 		Pattern conjucao = Pattern.compile("([-][a-z][&][a-z]){1}");
 		
@@ -93,12 +94,20 @@ public class Conversor {
 		
 		if(d.lookingAt()) {
 			//-x#y = (-x & -y)
-			result =  "(-" +  clause.replaceAll("\\#", "& -") + ")";
-			out.println(d);
+			start = d.start();
+			end = d.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\#", "& -") + ")" + result.substring(end,result.length());
 		}
 		else if (c.lookingAt()) {
 			//-x&y = (-x # -y)
-			result =  "(" +  clause.replaceAll("\\&", "#") + ")";
+			start = c.start();
+			end = c.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", "#" + ")" ) + result.substring(end,result.length());
+
 		}
 		
 		
@@ -117,6 +126,11 @@ public class Conversor {
 		if (n.lookingAt()) {
 			//--x  = x
 			//System.out.println(i.matches());
+			start = n.start();
+			end = n.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\-\\-", " ") + ")" + result.substring(end,result.length());
 			aux =  "(" +  clause.replaceAll("\\-\\-", " ") + ")";
 		}
 		
@@ -135,7 +149,13 @@ public class Conversor {
 		if (m.lookingAt()) {
 			//x # y & z
 			// x # y & x # y
-			result =  "(" +  clause.replaceAll("\\&", " )&(x #")+ ")";
+			start = m.start();
+			end = m.end();
+
+			aux = result.substring(start,end);
+			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", ") & ( x ") + ")" + result.substring(end,result.length());
+			//result =  "(" +  clause.replaceAll("\\&", " )&(x #")+ ")";
+			//capturar letra na conversão
 			//String b = a + "(-" +  auxiliar.replaceAll("\\&", "#")+ ")";
 		}
 		
