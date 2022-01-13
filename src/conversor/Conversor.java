@@ -49,12 +49,17 @@ public class Conversor {
 				auxiliar = auxiliar.replaceAll("[()]","");
 						
 				if(!(i == 0)) {
-					formula[i-1] = chageType(auxiliar);
-				}else {
 					formula[i] = chageType(auxiliar);
+					formula[i] = move(formula[i]);
+					formula[i] = doubleNegation(formula[i]);
+					formula[i-1] += distribute(formula[i]);
+				}else {
+					formula[i] = chageType(formula[i]);
+					formula[i] = move(formula[i]);
+					formula[i] = doubleNegation(formula[i]);
+					formula[i] = distribute(formula[i]);
 				}
 		}
-		formula[0] = formula[0].replace("--", "");
 		
 		System.out.print("\n\n"+formula[0]+"\n\n\n");
 	}
@@ -76,12 +81,10 @@ public class Conversor {
 			aux = result.substring(start,end);
 			result = result.substring(0,start) + "(-" + aux.replaceAll("\\>", "#") + ")" + result.substring(end,result.length());
 		}
-		
 		return result;
 	}
 	
 	public String move(String clause) {
-
 		Pattern disjuncao = Pattern.compile("([-][a-z][#][a-z]){1}");
 		Pattern conjucao = Pattern.compile("([-][a-z][&][a-z]){1}");
 		
@@ -94,24 +97,16 @@ public class Conversor {
 		
 		if(d.lookingAt()) {
 			//-x#y = (-x & -y)
-			start = d.start();
-			end = d.end();
-
-			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\#", "& -") + ")" + result.substring(end,result.length());
+			result =  "(-" +  clause.replaceAll("\\#", "& -") + ")";
+			out.println(d);
 		}
 		else if (c.lookingAt()) {
 			//-x&y = (-x # -y)
-			start = c.start();
-			end = c.end();
-
-			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", "#" + ")" ) + result.substring(end,result.length());
-
+			result =  "(" +  clause.replaceAll("\\&", "#") + ")";
 		}
 		
 		
-		return null;
+		return result;
 	}
 	
 	public String doubleNegation(String clause) {
@@ -124,17 +119,11 @@ public class Conversor {
 		int start,end;
 		
 		if (n.lookingAt()) {
-			//--x  = x
-			//System.out.println(i.matches());
-			start = n.start();
-			end = n.end();
 
-			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\-\\-", " ") + ")" + result.substring(end,result.length());
-			aux =  "(" +  clause.replaceAll("\\-\\-", " ") + ")";
+			aux =  "(" +  clause.replaceAll("\\-\\-", "") + ")";
 		}
 		
-		return null;
+		return result;
 	}
 	
 	public String distribute(String clause) {
@@ -147,19 +136,10 @@ public class Conversor {
 		int start,end;
 		
 		if (m.lookingAt()) {
-			//x # y & z
-			// x # y & x # y
-			start = m.start();
-			end = m.end();
-
-			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", ") & ( x ") + ")" + result.substring(end,result.length());
-			//result =  "(" +  clause.replaceAll("\\&", " )&(x #")+ ")";
-			//capturar letra na conversão
-			//String b = a + "(-" +  auxiliar.replaceAll("\\&", "#")+ ")";
+			result =  "(" +  clause.replaceAll("\\&", " )&(x #")+ ")";
 		}
 		
-		return null;
+		return result;
 	}
 	
 	public String[] notNullString(String[] list) {
