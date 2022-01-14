@@ -1,9 +1,9 @@
-import AnalisadorLexico.AnalisadorLexico;
-import AnalisadorSintatico.AnalisadorSintatico;
-import Exeptions.ExceptionConversor;
-import Exeptions.ExceptionSintatico;
-import Exeptions.ExceptionLexico;
-import conversor.Conversor;
+import LexicalAnalyzer.LexicalAnalyzer;
+import Parser.Parser;
+import Exeptions.ExceptionConverter;
+import Exeptions.ExceptionPaser;
+import Exeptions.ExceptionLexical;
+import Converter.Converter;
 
 import java.util.Scanner;
 
@@ -12,7 +12,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        int escolha = 0;
+        int choice = 0;
         Scanner input = new Scanner(System.in);
 
         do{
@@ -21,30 +21,30 @@ public class App {
 
             System.out.print("##--Teste Estrutura de Menu--##\n\n");
             System.out.print("|------------------------------|\n");
-            System.out.print("| escolha 1 - Verificar Formula|\n");
-            System.out.print("| escolha 2 - Converter Formula|\n");
-            System.out.print("| escolha 3 - Sair             |\n");
+            System.out.print("| Escolha 1 - Verificar Formula|\n");
+            System.out.print("| Escolha 2 - Converter Formula|\n");
+            System.out.print("| Escolha 3 - Sair             |\n");
             System.out.print("|------------------------------|\n");
             System.out.print("Digite um numero equivalente a sua escolha: ");
 
-            escolha = input.nextInt(); // gravando a escolha
+            choice = input.nextInt();
 
-            switch (escolha){
+            switch (choice){
                 case 1:
                     try{
                         //instaciando os analisadores
-                        AnalisadorLexico aLexico = new AnalisadorLexico("src/input.txt");
-                        AnalisadorSintatico aSintatico = new AnalisadorSintatico(aLexico);
+                        LexicalAnalyzer aLexico = new LexicalAnalyzer("src/input.txt");
+                        Parser aSintatico = new Parser(aLexico);
 
                         //chamando a function
-                        aSintatico.verificador();
+                        aSintatico.checker();
 
                         System.out.println("\n\nAnalise foi um sucesso!\n");
 
-                    }catch (ExceptionLexico e) {
+                    }catch (ExceptionLexical e) {
                         System.out.println("Erro Lexico: " +e.getMessage());
                         e.printStackTrace();
-                    }catch (ExceptionSintatico e) {
+                    }catch (ExceptionPaser e) {
                         System.out.println("\n Erro Sintatico: " +e.getMessage());
                         e.printStackTrace();
                     }catch (Exception e) {
@@ -56,18 +56,24 @@ public class App {
 
                 case 2:
                     try{
+                        LexicalAnalyzer aLexico = new LexicalAnalyzer("src/input.txt");
+                        Parser aSintatico = new Parser(aLexico);
+
+                        //chamando a function
+                        aSintatico.checker();
+
                         System.out.println("\n\n Iniciando equilavencia de formula");
 
-                        Conversor conversor = new Conversor();
-                        conversor.converter("src/input.txt");
+                        Converter conversor = new Converter();
+                        conversor.toConvert("src/input.txt");
 
-                    }catch (ExceptionLexico e) {
+                    }catch (ExceptionLexical e) {
                         System.out.println("Erro Lexico: " +e.getMessage());
                         e.printStackTrace();
-                    }catch (ExceptionSintatico e) {
+                    }catch (ExceptionPaser e) {
                         System.out.println("\n Erro Sintatico: " +e.getMessage());
                         e.printStackTrace();
-                    }catch (ExceptionConversor e){
+                    }catch (ExceptionConverter e){
                         System.out.println("Erro de equivalencia " + e.getMessage());
                         e.printStackTrace();
                     }catch (Exception e) {
@@ -85,7 +91,7 @@ public class App {
                     System.out.println("Numero invalido!");
                     break;
             }
-        }while (escolha != 3);
+        }while (choice != 3);
 
 
     }

@@ -9,7 +9,7 @@ Indicar se a formula escrita pelo usuario é proposicional ou não e converte a 
 
 ## Proprosta de solução
 Para esse probelma foi implementado dois analisadores, um analisador lexico e outro sintatico verificando se cada elemento da formula está dentro do conjunto de 
-biblioteca abordado pela questão e verificar se sua escrita está correta, alem disso, um conversor responsavel por converter  uma formula formula proposicional em em uma formula equivalente na forma noormla conjuntiva
+biblioteca abordado pela questão e verificar se sua escrita está correta, alem disso, um Converter responsavel por Converter  uma formula formula proposicional em em uma formula equivalente na forma noormla conjuntiva
 
 # Informações Técnicas
 ## Biblioteca utilizada

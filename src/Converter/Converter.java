@@ -1,4 +1,4 @@
-package conversor;
+package Converter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Stack;
@@ -7,9 +7,7 @@ import java.util.regex.Pattern;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static java.lang.System.*;
-
-public class Conversor {
+public class Converter {
 
 	private int clause = 0;
 	private String formula;
@@ -17,9 +15,9 @@ public class Conversor {
 	@SuppressWarnings("unused")
 	private String formulaConvertida;
 
-	public Conversor() {}
+	public Converter() {}
 
-	public void converter(String filename) {
+	public void toConvert(String filename) {
 
 		try{
 			this.formula = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
@@ -48,6 +46,17 @@ public class Conversor {
 		translate(this.formula);
 	}
 
+	public void runOrNot(String formula){
+		for (char element: formula.toCharArray()) {
+			if(element == '>'){
+				translate(formula);
+			}else{
+				System.exit(0);
+			}
+		}
+	}
+
+	//juntando os passos a passos
 	public void translate(String formula) {
 		String auxiliar = "";
 
@@ -69,7 +78,8 @@ public class Conversor {
 		
 		System.out.print("\n\n"+formula+"\n\n\n");
 	}
-	
+
+	//removendo a implicação
 	private String chageType(String clause) {
 
 		Pattern implica = Pattern.compile("([a-z][>][a-z]){1}");
@@ -89,7 +99,8 @@ public class Conversor {
 		}
 		return result;
 	}
-	
+
+	//internalizando as negações
 	public String move(String clause) {
 		Pattern disjuncao = Pattern.compile("([-][(][a-z][#][a-z][)]){1}");
 		Pattern conjucao = Pattern.compile("([-][(][a-z][&][a-z][)]){1}");
@@ -119,12 +130,14 @@ public class Conversor {
 		
 		return result;
 	}
-	
+
+	//eleminando as duplas negações
 	public String doubleNegation(String clause) {
-		Pattern negacao = Pattern.compile("(([-][-])+[a-z])");
+
+		Pattern negacao = Pattern.compile("([(]?[-][(]?[-][a-z][)]?[)?]){1}");
 
 		Matcher n = negacao.matcher(clause);
-		
+
 		String result = clause;
 		String aux;
 		int start,end;
@@ -134,12 +147,13 @@ public class Conversor {
 			end = n.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + result.substring(end-1, end) + result.substring(end,result.length());
+			result = ("(" + result.substring(0,start) + result.substring(end-1, end) + result.substring(end,result.length()) + ")" );
 		}
 		
 		return result;
 	}
-	
+
+	//distribuitiva
 	public String distribute(String clause) {
 		Pattern morgan = Pattern.compile("([a-z][#][(]?[a-z][&][a-z][)]?){1}");
 //			x # (y & z) = (y # x) & (z # x)
