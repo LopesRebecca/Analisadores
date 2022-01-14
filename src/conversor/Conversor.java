@@ -1,6 +1,7 @@
 package conversor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.nio.file.Files;
@@ -26,42 +27,47 @@ public class Conversor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		String[] formulaArray = formula.split("[\\(||\\)]");
+		
 		formulaConvertida = "";
 
-		for (int i = 0; i < formulaArray.length; i++) {
-			String auxiliar = "";
-			if (formulaArray[i].matches("[-]") && formulaArray[i + 1].matches("[-][a-z]")) {
-				auxiliar = formulaArray[i].replaceAll("[-]", "[-][-][a-z]");
-				out.println(auxiliar);
+		Stack<Character> stack = new Stack<Character>();
+
+		for (char element : formula.toCharArray()) {
+			if(element == '(') {
+				stack.push(element);
+			}else {
+				if(element ==')') {
+					char close = (Character) stack.peek();
+					if(element == ')' && close == '('){
+						stack.pop();
+						this.clause++;
+					}					
+				}
 			}
 		}
-
-		translate(formulaArray);
+		translate(this.formula);
 	}
 
-	public void translate(String[] formula) {
+	public void translate(String formula) {
 		String auxiliar = "";
 
-		for(int i = formula.length-1; i > -1; i--) {
-				auxiliar = formula[i].replaceAll("\\s","");
-//				auxiliar = auxiliar.replaceAll("[()]","");
+		for(int i = 0; i <clause+1; i++){
+			formula = formula.replaceAll("\\s","");
 						
-				if(!(i == 0)) {
-					formula[i] = chageType(auxiliar);
-					formula[i] = move(formula[i]);
-					formula[i] = doubleNegation(formula[i]);
-					formula[i-1] += distribute(formula[i]);
+				if((i == 0)) {
+					formula = chageType(formula);
+					formula = move(formula);
+					formula = doubleNegation(formula);
+					formula = distribute(formula);
 				}else {
-					formula[i] = chageType(auxiliar);
-					formula[i] = move(formula[i]);
-					formula[i] = doubleNegation(formula[i]);
-					formula[i] = distribute(formula[i]);
+					formula = chageType(formula);
+					formula = move(formula);
+					formula = doubleNegation(formula);
+					formula = distribute(formula);
 				}
 		}
 		
-		System.out.print("\n\n"+formula[0]+"\n\n\n");
+		System.out.print("\n\n"+formula+"\n\n\n");
 	}
 	
 	private String chageType(String clause) {
@@ -79,14 +85,14 @@ public class Conversor {
 			end = i.end();
 			
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\>", "#") + ")" + result.substring(end,result.length());
+			result = result.substring(0,start) + "-" + result.replaceAll("\\>", "#") + result.substring(end,result.length());
 		}
 		return result;
 	}
 	
 	public String move(String clause) {
-		Pattern disjuncao = Pattern.compile("([^-][-][a-z][#][a-z]){1}");
-		Pattern conjucao = Pattern.compile("([-][a-z][&][a-z]){1}");
+		Pattern disjuncao = Pattern.compile("([-][(][a-z][#][a-z][)]){1}");
+		Pattern conjucao = Pattern.compile("([-][(][a-z][&][a-z][)]){1}");
 		
 		Matcher d = disjuncao.matcher(clause);
 		Matcher c = conjucao.matcher(clause);
@@ -98,16 +104,16 @@ public class Conversor {
 		if(d.find()) {
 			start = d.start();
 			end = d.end();
-
+//			-(x#y)    = (-x&-y) 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(" + aux.replaceAll("\\#", "&-") + ")" + result.substring(end,result.length());
+			result = result.substring(0,start) + "(-" + result.substring(start+2, start+3) + "&-" + result.substring(end-2, end)+  result.substring(end,result.length());
 		}
 		else if (c.find()) {
 			start = c.start();
 			end = c.end();
-
+//			-(x & y)    = (-x # -y)
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(" + aux.replaceAll("\\&", "#-") + ")" + result.substring(end,result.length());
+			result = result.substring(0,start) + "(-" + result.substring(start+2, start+3) + "#-" + result.substring(end-2, end)+  result.substring(end,result.length());
 		}
 		
 		
@@ -115,7 +121,7 @@ public class Conversor {
 	}
 	
 	public String doubleNegation(String clause) {
-		Pattern negacao = Pattern.compile("([-][-][a-z]){1}");
+		Pattern negacao = Pattern.compile("(([-][-])+[a-z])");
 
 		Matcher n = negacao.matcher(clause);
 		
@@ -128,7 +134,7 @@ public class Conversor {
 			end = n.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + aux.replaceAll("\\-\\-", "") + result.substring(end,result.length());
+			result = result.substring(0,start) + result.substring(end-1, end) + result.substring(end,result.length());
 		}
 		
 		return result;
@@ -149,8 +155,8 @@ public class Conversor {
 			end = m.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "("+  aux.substring(start, start+3) + ")&(" + aux.substring(start,start+2)+aux.substring(end-1,end) 
-				+")"+ result.substring(end,result.length());
+			result = result.substring(0,start) + "(" + result.substring(start, start+2) + result.substring(start+3, start+4) + ")&(" + 
+					result.substring(start,start+2) + result.substring(end-2,end) +  result.substring(end,result.length());
 		}
 		
 		return result;
