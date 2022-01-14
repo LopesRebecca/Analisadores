@@ -46,7 +46,7 @@ public class Conversor {
 
 		for(int i = formula.length-1; i > -1; i--) {
 				auxiliar = formula[i].replaceAll("\\s","");
-				auxiliar = auxiliar.replaceAll("[()]","");
+//				auxiliar = auxiliar.replaceAll("[()]","");
 						
 				if(!(i == 0)) {
 					formula[i] = chageType(auxiliar);
@@ -54,7 +54,7 @@ public class Conversor {
 					formula[i] = doubleNegation(formula[i]);
 					formula[i-1] += distribute(formula[i]);
 				}else {
-					formula[i] = chageType(formula[i]);
+					formula[i] = chageType(auxiliar);
 					formula[i] = move(formula[i]);
 					formula[i] = doubleNegation(formula[i]);
 					formula[i] = distribute(formula[i]);
@@ -74,7 +74,7 @@ public class Conversor {
 		String aux;
 		int start,end;
 		
-		if (i.lookingAt()) {
+		if (i.find()) {
 			start = i.start();
 			end = i.end();
 			
@@ -85,7 +85,7 @@ public class Conversor {
 	}
 	
 	public String move(String clause) {
-		Pattern disjuncao = Pattern.compile("([-][a-z][#][a-z]){1}");
+		Pattern disjuncao = Pattern.compile("([^-][-][a-z][#][a-z]){1}");
 		Pattern conjucao = Pattern.compile("([-][a-z][&][a-z]){1}");
 		
 		Matcher d = disjuncao.matcher(clause);
@@ -95,19 +95,19 @@ public class Conversor {
 		String aux;
 		int start,end;
 		
-		if(d.lookingAt()) {
+		if(d.find()) {
 			start = d.start();
 			end = d.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\#", "& -") + ")" + result.substring(end,result.length());
+			result = result.substring(0,start) + "(" + aux.replaceAll("\\#", "&-") + ")" + result.substring(end,result.length());
 		}
-		else if (c.lookingAt()) {
+		else if (c.find()) {
 			start = c.start();
 			end = c.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", "#" + ")" ) + result.substring(end,result.length());
+			result = result.substring(0,start) + "(" + aux.replaceAll("\\&", "#-") + ")" + result.substring(end,result.length());
 		}
 		
 		
@@ -123,32 +123,34 @@ public class Conversor {
 		String aux;
 		int start,end;
 		
-		if (n.lookingAt()) {
+		if (n.find()) {
 			start = n.start();
 			end = n.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\-\\-", " ") + ")" + result.substring(end,result.length());
+			result = result.substring(0,start) + aux.replaceAll("\\-\\-", "") + result.substring(end,result.length());
 		}
 		
 		return result;
 	}
 	
 	public String distribute(String clause) {
-		Pattern morgan = Pattern.compile("([a-z][#][a-z][&][a-z]){1}");
-		
+		Pattern morgan = Pattern.compile("([a-z][#][(]?[a-z][&][a-z][)]?){1}");
+//			x # (y & z) = (y # x) & (z # x)
+//		 "x#y&z" = (x#y)&(x#z)
 		Matcher m = morgan.matcher(clause);
 
 		String result = clause;
 		String aux;
 		int start,end;
 		
-		if (m.lookingAt()) {
+		if (m.find()) {
 			start = m.start();
 			end = m.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(-" + aux.replaceAll("\\&", ") & ( x ") + ")" + result.substring(end,result.length());
+			result = result.substring(0,start) + "("+  aux.substring(start, start+3) + ")&(" + aux.substring(start,start+2)+aux.substring(end-1,end) 
+				+")"+ result.substring(end,result.length());
 		}
 		
 		return result;
@@ -180,9 +182,9 @@ public class Conversor {
 
 	/*
 	(x > y)     = (-x # y)
-	-(x # y)    = (-x & -y)
+	-(x # y)    = (-x & -y) 
 	-(x & y)    = (-x # -y)
 	--x         = x
-	x # (y & z) = (x # y) & (x # y)
+	x # (y & z) = (y # x) & (z # x)
 	 */
 }
