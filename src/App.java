@@ -56,11 +56,11 @@ public class App {
 
                 case 2:
                     try{
-                        LexicalAnalyzer aLexico = new LexicalAnalyzer("src/input.txt");
-                        Parser aSintatico = new Parser(aLexico);
+//                        LexicalAnalyzer aLexico = new LexicalAnalyzer("src/input.txt");
+//                        Parser aSintatico = new Parser(aLexico);
 
                         //chamando a function
-                        aSintatico.checker();
+//                        aSintatico.checker();
 
                         System.out.println("\n\n Iniciando equilavencia de formula");
 

@@ -26,23 +26,23 @@ public class Converter {
 			e.printStackTrace();
 		}
 		
-		formulaConvertida = "";
-
-		Stack<Character> stack = new Stack<Character>();
-
-		for (char element : formula.toCharArray()) {
-			if(element == '(') {
-				stack.push(element);
-			}else {
-				if(element ==')') {
-					char close = (Character) stack.peek();
-					if(element == ')' && close == '('){
-						stack.pop();
-						this.clause++;
-					}					
-				}
-			}
-		}
+//		formulaConvertida = "";
+//
+//		Stack<Character> stack = new Stack<Character>();
+//
+//		for (char element : formula.toCharArray()) {
+//			if(element == '(') {
+//				stack.push(element);
+//			}else {
+//				if(element ==')') {
+//					char close = (Character) stack.peek();
+//					if(element == ')' && close == '('){
+//						stack.pop();
+//						this.clause++;
+//					}					
+//				}
+//			}
+//		}
 		translate(this.formula);
 	}
 
@@ -58,45 +58,42 @@ public class Converter {
 
 	//juntando os passos a passos
 	public void translate(String formula) {
-		String auxiliar = "";
-
-		for(int i = 0; i <clause+1; i++){
-			formula = formula.replaceAll("\\s","");
-						
-				if((i == 0)) {
-					formula = chageType(formula);
-					formula = move(formula);
-					formula = doubleNegation(formula);
-					formula = distribute(formula);
-				}else {
-					formula = chageType(formula);
-					formula = move(formula);
-					formula = doubleNegation(formula);
-					formula = distribute(formula);
-				}
-		}
+		String auxiliar = formula;
+		auxiliar = auxiliar.replaceAll("\\s","");
 		
-		System.out.print("\n\n"+formula+"\n\n\n");
+
+			auxiliar = chageType(auxiliar);
+			auxiliar = move(auxiliar);
+			auxiliar = doubleNegation(auxiliar);
+			auxiliar = distribute(auxiliar);
+
+		System.out.print("\n\n"+auxiliar+"\n\n\n");
 	}
 
-	//removendo a implicação
+	//removendo a implica��o
 	private String chageType(String clause) {
-
+			
 		Pattern implica = Pattern.compile("([a-z][>][a-z]){1}");
-
 		Matcher i = implica.matcher(clause);
 
 		String result = clause;
 		String aux;
 		int start,end;
-		
-		if (i.find()) {
+//		(x > y)     = (-x # y)
+		while(i.find()) {
 			start = i.start();
 			end = i.end();
 			
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "-" + result.replaceAll("\\>", "#") + result.substring(end,result.length());
+			result = result.substring(0,start) + "-" + result.substring(start,start+1) + "#" + result.substring(end-1,end)
+			+ result.substring(end,result.length());
+			result = move(result);
+			result = doubleNegation(result);
+			result = distribute(result);
+			
+			i= implica.matcher(result);
 		}
+		
 		return result;
 	}
 
@@ -112,19 +109,27 @@ public class Converter {
 		String aux;
 		int start,end;
 		
-		if(d.find()) {
+		while(d.find()) {
 			start = d.start();
 			end = d.end();
 //			-(x#y)    = (-x&-y) 
 			aux = result.substring(start,end);
 			result = result.substring(0,start) + "(-" + result.substring(start+2, start+3) + "&-" + result.substring(end-2, end)+  result.substring(end,result.length());
+			result = doubleNegation(result);
+			result = distribute(result);
+			
+			d= disjuncao.matcher(result);
 		}
-		else if (c.find()) {
+		while(c.find()) {
 			start = c.start();
 			end = c.end();
 //			-(x & y)    = (-x # -y)
 			aux = result.substring(start,end);
 			result = result.substring(0,start) + "(-" + result.substring(start+2, start+3) + "#-" + result.substring(end-2, end)+  result.substring(end,result.length());
+			result = doubleNegation(result);
+			result = distribute(result);
+			
+			c= conjucao.matcher(result);
 		}
 		
 		
@@ -132,9 +137,9 @@ public class Converter {
 	}
 
 	//eleminando as duplas negações
-	public String doubleNegation(String clause) {
 
-		Pattern negacao = Pattern.compile("([(]?[-][(]?[-][a-z][)]?[)?]){1}");
+	public String doubleNegation(String clause) {
+		Pattern negacao = Pattern.compile("([(]?[-][(]?[-][a-z]){1}");
 
 		Matcher n = negacao.matcher(clause);
 
@@ -148,6 +153,9 @@ public class Converter {
 
 			aux = result.substring(start,end);
 			result = ("(" + result.substring(0,start) + result.substring(end-1, end) + result.substring(end,result.length()) + ")" );
+			result = distribute(result);
+			
+			n= negacao.matcher(result);
 		}
 		
 		return result;
@@ -155,7 +163,7 @@ public class Converter {
 
 	//distribuitiva
 	public String distribute(String clause) {
-		Pattern morgan = Pattern.compile("([a-z][#][(]?[a-z][&][a-z][)]?){1}");
+		Pattern morgan = Pattern.compile("([a-z][#][(]?[a-z][&][a-z]){1}");
 //			x # (y & z) = (y # x) & (z # x)
 //		 "x#y&z" = (x#y)&(x#z)
 		Matcher m = morgan.matcher(clause);
@@ -164,15 +172,15 @@ public class Converter {
 		String aux;
 		int start,end;
 		
-		if (m.find()) {
+		while(m.find()) {
 			start = m.start();
 			end = m.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(" + result.substring(start, start+2) + result.substring(start+3, start+4) + ")&(" + 
-					result.substring(start,start+2) + result.substring(end-2,end) +  result.substring(end,result.length());
+			result = result.substring(0,start) + "(" + result.substring(start, start+2) + result.substring(end-3,end-2) + ")&(" + 
+					result.substring(start,start+2) + result.substring(end-1,end)+ ")" +  result.substring(end,result.length());
 		}
-		
+//		-(a#b)&(a#c
 		return result;
 	}
 	
@@ -199,7 +207,7 @@ public class Converter {
 	public void setClause(int clause) {
 		this.clause = clause;
 	}
-
+	
 	/*
 	(x > y)     = (-x # y)
 	-(x # y)    = (-x & -y) 
