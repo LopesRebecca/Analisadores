@@ -70,7 +70,7 @@ public class Converter {
 		System.out.print("\n\n"+auxiliar+"\n\n\n");
 	}
 
-	//removendo a implicação
+	//removendo a implicaï¿½ï¿½o
 	private String chageType(String clause) {
 			
 		Pattern implica = Pattern.compile("([a-z][>][a-z]){1}");
@@ -146,16 +146,16 @@ public class Converter {
 		String result = clause;
 		String aux;
 		int start,end;
-		
-		if (n.find()) {
+
+		while (n.find()){
 			start = n.start();
 			end = n.end();
 
 			aux = result.substring(start,end);
 			result = ("(" + result.substring(0,start) + result.substring(end-1, end) + result.substring(end,result.length()) + ")" );
 			result = distribute(result);
-			
-			n= negacao.matcher(result);
+
+			n = negacao.matcher(result);
 		}
 		
 		return result;
@@ -177,10 +177,10 @@ public class Converter {
 			end = m.end();
 
 			aux = result.substring(start,end);
-			result = result.substring(0,start) + "(" + result.substring(start, start+2) + result.substring(end-3,end-2) + ")&(" + 
+			result = result.substring(0,start) + "(" + result.substring(start, start+2) + result.substring(end-3,end-2) + ")&(" +
 					result.substring(start,start+2) + result.substring(end-1,end)+ ")" +  result.substring(end,result.length());
 		}
-//		-(a#b)&(a#c
+//		(-a#b)&(-a#c)
 		return result;
 	}
 	
