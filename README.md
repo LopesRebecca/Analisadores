@@ -112,9 +112,6 @@ Possiveis erros de conversão aonde o Pattern as vezes não reconhece a equivale
 
 [Rebecca Lelis](https://github.com/LopesRebecca)
 
-[Mahouvi Emmanuel](https://github.com/mahouvi4)
-
-
 ## Licença
 
 licenciado sob [MIT](https://github.com/erikyryan/trabalho-de-poo/blob/main/LICENSE)
